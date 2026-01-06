@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Index - Machine Learning Encyclopedia</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The Definitive Encyclopedia of Machine Learning</h1>
+            <h2>Master Index</h2>
+            <p class="subtitle">Study Progress Tracker</p>
+            
+            <div class="progress-container">
+                <div class="progress-labels">
+                    <span>Overall Progress</span>
+                    <span id="progress-text">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-bar"></div>
+                </div>
+            </div>
+        </header>
+
+        <main id="index-content">
+            <!-- Part I -->
+            <section class="part">
+                <h3>Part I: The Mathematical & Statistical Bedrock</h3>
+                <ul class="topic-list">
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-1" class="topic-checkbox">
+                            <a href="topics/linear_algebra.html" class="topic-link">1. Linear Algebra for ML</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">Scalars, Vectors, Matrices, and Tensors</span> <input type="checkbox" id="subtopic-1-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Vector Operations</span> <input type="checkbox" id="subtopic-1-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Matrix Algebra</span> <input type="checkbox" id="subtopic-1-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Linear Systems</span> <input type="checkbox" id="subtopic-1-4" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Matrix Decomposition (SVD, LU, Cholesky, PCA)</span> <input type="checkbox" id="subtopic-1-5" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-2" class="topic-checkbox">
+                            <a href="topics/calculus.html" class="topic-link">2. Calculus of Learning</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">Differential Calculus</span> <input type="checkbox" id="subtopic-2-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Multivariable Calculus</span> <input type="checkbox" id="subtopic-2-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">The Chain Rule</span> <input type="checkbox" id="subtopic-2-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">High-Order Derivatives</span> <input type="checkbox" id="subtopic-2-4" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Taylor Series Expansion</span> <input type="checkbox" id="subtopic-2-5" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-3" class="topic-checkbox">
+                            <a href="topics/probability.html" class="topic-link">3. Probability & Frequentist Statistics</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">Core Theory (Bayes' Theorem, Independence)</span> <input type="checkbox" id="subtopic-3-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Probability Distributions (Discrete & Continuous)</span> <input type="checkbox" id="subtopic-3-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item">
+                                <a href="topics/statistical_inference.html" class="subtopic-link">
+                                    <span class="subtopic-text">Statistical Inference (P-Value, Confidence Intervals, Hypothesis Testing)</span>
+                                </a>
+                                <input type="checkbox" id="subtopic-3-3" class="subtopic-checkbox">
+                            </li>
+                            <li class="subtopic-item"><span class="subtopic-text">Estimation Theory (MLE, MAP)</span> <input type="checkbox" id="subtopic-3-4" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Part II -->
+            <section class="part">
+                <h3>Part II: Supervised Learning</h3>
+                <ul class="topic-list">
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-4" class="topic-checkbox">
+                            <span class="topic-title">4. Linear & Non-Linear Regression</span>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item">
+                                <a href="topics/regression.html" class="subtopic-link">
+                                    <span class="subtopic-text">Simple & Multiple Linear Regression</span>
+                                </a>
+                                <input type="checkbox" id="subtopic-4-1" class="subtopic-checkbox">
+                            </li>
+                            <li class="subtopic-item">
+                                <a href="topics/assumptions_linearity.html" class="subtopic-link">
+                                    <span class="subtopic-text">Assumptions of Linearity</span>
+                                </a>
+                                <input type="checkbox" id="subtopic-4-2" class="subtopic-checkbox">
+                            </li>
+                            <li class="subtopic-item"><span class="subtopic-text">Parameter Optimization (OLS, Gradient Descent)</span> <input type="checkbox" id="subtopic-4-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Evaluation Metrics (MSE, MAE, R-Squared)</span> <input type="checkbox" id="subtopic-4-4" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Advanced Regression (Polynomial, Spline)</span> <input type="checkbox" id="subtopic-4-5" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Regularization (Ridge, Lasso, Elastic Net)</span> <input type="checkbox" id="subtopic-4-6" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-5" class="topic-checkbox">
+                            <a href="topics/classification.html" class="topic-link">5. Classification Algorithms</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">Logistic Regression</span> <input type="checkbox" id="subtopic-5-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Multiclass Classification (OvR, OvO, Softmax)</span> <input type="checkbox" id="subtopic-5-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Discriminant Analysis (LDA, QDA)</span> <input type="checkbox" id="subtopic-5-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Support Vector Machines (SVM)</span> <input type="checkbox" id="subtopic-5-4" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">The Kernel Trick (RBF, Polynomial)</span> <input type="checkbox" id="subtopic-5-5" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Instance-Based (KNN)</span> <input type="checkbox" id="subtopic-5-6" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Naive Bayes</span> <input type="checkbox" id="subtopic-5-7" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-6" class="topic-checkbox">
+                            <a href="topics/trees.html" class="topic-link">6. Tree-Based Models & Information Theory</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">Decision Tree Mechanics</span> <input type="checkbox" id="subtopic-6-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Information Metrics (Entropy, Gini Impurity)</span> <input type="checkbox" id="subtopic-6-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Ensemble Methods (Bagging, Random Forests, Boosting: AdaBoost, GBM, XGBoost)</span> <input type="checkbox" id="subtopic-6-3" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Part III -->
+            <section class="part">
+                <h3>Part III: Unsupervised Learning & Geometry</h3>
+                <ul class="topic-list">
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-7" class="topic-checkbox">
+                            <a href="topics/clustering.html" class="topic-link">7. Clustering & Association</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">Partitioning (K-Means, K-Means++)</span> <input type="checkbox" id="subtopic-7-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Hyperparameter Tuning (Elbow Method, Silhouette Scores)</span> <input type="checkbox" id="subtopic-7-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Hierarchical Clustering</span> <input type="checkbox" id="subtopic-7-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Density-Based (DBSCAN, OPTICS)</span> <input type="checkbox" id="subtopic-7-4" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Association (Apriori)</span> <input type="checkbox" id="subtopic-7-5" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-8" class="topic-checkbox">
+                            <a href="topics/dimensionality_reduction.html" class="topic-link">8. Dimensionality Reduction</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">Linear (PCA, Factor Analysis)</span> <input type="checkbox" id="subtopic-8-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Non-Linear (t-SNE, UMAP, Isomap, Kernel PCA)</span> <input type="checkbox" id="subtopic-8-2" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Part IV -->
+            <section class="part">
+                <h3>Part IV: Neural Networks & Deep Learning</h3>
+                <ul class="topic-list">
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-9" class="topic-checkbox">
+                            <a href="topics/deep_learning_foundations.html" class="topic-link">9. Deep Learning Foundations</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">Architecture (Perceptrons, MLP)</span> <input type="checkbox" id="subtopic-9-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Activation Functions (ReLU, Sigmoid, Tanh)</span> <input type="checkbox" id="subtopic-9-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">The Optimization Loop (Backpropagation)</span> <input type="checkbox" id="subtopic-9-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Neural Optimizers (Adam, RMSProp, SGD)</span> <input type="checkbox" id="subtopic-9-4" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Neural Regularization (Dropout, Batch Norm)</span> <input type="checkbox" id="subtopic-9-5" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-10" class="topic-checkbox">
+                            <a href="topics/specialized_architectures.html" class="topic-link">10. Specialized Architectures</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">Computer Vision (CNNs)</span> <input type="checkbox" id="subtopic-10-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Sequence Models (RNNs, LSTMs, GRUs)</span> <input type="checkbox" id="subtopic-10-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">The Transformer (Self-Attention)</span> <input type="checkbox" id="subtopic-10-3" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Part V -->
+            <section class="part">
+                <h3>Part V: The Frontier (2024-2026)</h3>
+                <ul class="topic-list">
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-11" class="topic-checkbox">
+                            <a href="topics/generative_ai.html" class="topic-link">11. Generative AI & LLMs</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">Large Language Models (GPT, BERT, T5)</span> <input type="checkbox" id="subtopic-11-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Fine-Tuning (PEFT, LoRA)</span> <input type="checkbox" id="subtopic-11-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Generation Models (GANs, VAEs, Diffusion)</span> <input type="checkbox" id="subtopic-11-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">RAG (Vector Databases)</span> <input type="checkbox" id="subtopic-11-4" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-12" class="topic-checkbox">
+                            <a href="topics/reinforcement_learning.html" class="topic-link">12. Reinforcement Learning</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">Foundations (MDP, Rewards)</span> <input type="checkbox" id="subtopic-12-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Algorithms (Q-Learning, DQN, PPO)</span> <input type="checkbox" id="subtopic-12-2" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Part VI -->
+            <section class="part">
+                <h3>Part VI: Engineering & Metrics</h3>
+                <ul class="topic-list">
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-13" class="topic-checkbox">
+                            <a href="topics/evaluation.html" class="topic-link">13. Evaluation & Validation</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">Classification Metrics (Precision, Recall, F1, ROC-AUC)</span> <input type="checkbox" id="subtopic-13-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Validation (K-Fold Cross-Validation)</span> <input type="checkbox" id="subtopic-13-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Analysis (Bias-Variance Trade-off)</span> <input type="checkbox" id="subtopic-13-3" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-14" class="topic-checkbox">
+                            <a href="topics/mlops.html" class="topic-link">14. MLOps & Explainability</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">XAI (SHAP, LIME)</span> <input type="checkbox" id="subtopic-14-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Production (Containerization, Model/Data Drift)</span> <input type="checkbox" id="subtopic-14-2" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

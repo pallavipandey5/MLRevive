@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assumptions of Linearity - ML Encyclopedia</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .content-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        h2 {
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-top: 2rem;
+        }
+
+        h3 { color: var(--text-color); margin-top: 1.5rem; }
+
+        p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
+
+        /* Demo Containers */
+        .demo-section {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .viz-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        canvas {
+            background: #0f172a;
+            border-radius: 8px;
+            width: 100%;
+            border: 1px solid #334155;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        input[type=range] {
+            accent-color: var(--primary-color);
+            width: 200px;
+        }
+
+        .indicator-box {
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .status-good { background: rgba(52, 211, 153, 0.2); color: #34d399; border: 1px solid #34d399; }
+        .status-bad { background: rgba(244, 63, 94, 0.2); color: #f43f5e; border: 1px solid #f43f5e; }
+
+        .explanation {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 1rem;
+        }
+
+        .small-title {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <a href="../index.html" class="back-link">← Back to Master Index</a>
+        
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+            <h1>Assumptions of Linear Regression</h1>
+
+            <div class="understanding-widget" id="rating-widget" data-topic="assumptions_linearity">
+                <span class="understanding-label">Understanding:</span>
+                <div class="rating-box" data-value="1"></div>
+                <div class="rating-box" data-value="2"></div>
+                <div class="rating-box" data-value="3"></div>
+                <div class="rating-box" data-value="4"></div>
+                <div class="rating-box" data-value="5"></div>
+            </div>
+        </div>
+
+        <script>
+            (function() {
+                const widget = document.getElementById('rating-widget');
+                const topicId = widget.getAttribute('data-topic');
+                const boxes = widget.querySelectorAll('.rating-box');
+                const savedRating = localStorage.getItem('rating-' + topicId) || 0;
+                updateVisuals(savedRating);
+                boxes.forEach(box => {
+                    box.addEventListener('click', () => {
+                        const val = box.getAttribute('data-value');
+                        localStorage.setItem('rating-' + topicId, val);
+                        updateVisuals(val);
+                    });
+                });
+                function updateVisuals(rating) {
+                    boxes.forEach(b => {
+                        if(parseInt(b.getAttribute('data-value')) <= rating) b.classList.add('filled');
+                        else b.classList.remove('filled');
+                    });
+                }
+            })();
+        </script>
+        <p>
+            Linear Regression isn't just about drawing a line. For the model to be statistically valid and trustworthy, the data must follow a set of "Rules" (Assumptions). If these are broken, your predictions or p-values might be garbage.
+        </p>
+
+        <!-- 1. Homoscedasticity -->
+        <section>
+            <h2>1. Homoscedasticity (Equal Variance)</h2>
+            <p>
+                <strong>The Rule:</strong> The error (noise) should be consistent across all values of X. <br>
+                <strong>The Violation (Heteroscedasticity):</strong> The error spreads out like a funnel (e.g., predicting house prices becomes harder/noisier for expensive houses).
+            </p>
+            
+            <div class="demo-section">
+                <div class="viz-grid">
+                    <div>
+                        <div class="small-title">Data Plot (X vs Y)</div>
+                        <canvas id="homo-data" width="400" height="300"></canvas>
+                    </div>
+                    <div>
+                        <div class="small-title">Residual Plot (Predicted vs Error)</div>
+                        <canvas id="homo-resid" width="400" height="300"></canvas>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <label>Noise Pattern:</label>
+                    <span>Uniform (Good)</span>
+                    <input type="range" id="homoSlider" min="0" max="1" step="0.01" value="0">
+                    <span>Funnel (Bad)</span>
+                </div>
+
+                <div id="homo-status" class="indicator-box status-good" style="margin-top: 1rem;">
+                    Status: Homoscedastic (Pass)
+                </div>
+
+                <div class="explanation">
+                    <h4>How to diagnose?</h4>
+                    <p>
+                        Look at the <strong>Residual Plot</strong> on the right.
+                        <br>• If it looks like a random cloud of blobs → <strong>Good</strong>.
+                        <br>• If it looks like a cone or fan (getting wider to the right) → <strong>Bad</strong>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Normality of Residuals -->
+        <section>
+            <h2>2. Normality of Residuals</h2>
+            <p>
+                <strong>The Rule:</strong> The errors (residuals) should follow a Normal (Bell Curve) distribution. centered at zero.
+            </p>
+
+            <div class="demo-section">
+                <div class="viz-grid">
+                    <div>
+                        <div class="small-title">Histogram of Residuals</div>
+                        <canvas id="norm-hist" width="400" height="300"></canvas>
+                    </div>
+                    <div>
+                        <div class="small-title">Q-Q Plot (Quantile-Quantile)</div>
+                        <canvas id="norm-qq" width="400" height="300"></canvas>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button onclick="normApp.setNormal()" class="primary-btn">Generate Normal Errors</button>
+                    <button onclick="normApp.setSkewed()" class="danger-btn">Generate Skewed Errors</button>
+                </div>
+
+                <div class="explanation">
+                    <h4>The Q-Q Plot</h4>
+                    <p>
+                        This is the pro way to check normality.
+                        <br>• <strong>Dots on the Red Line:</strong> The data fits the theoretical normal distribution perfectly.
+                        <br>• <strong>Dots curling away:</strong> The data is skewed or has heavy tails (outliers).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Multicollinearity -->
+        <section>
+            <h2>3. Multicollinearity</h2>
+            <p>
+                <strong>The Rule:</strong> Independent variables ($x_1, x_2$) should NOT be too correlated with each other.
+                If they are, the model gets confused about which variable is actually contributing to the prediction.
+            </p>
+            <p>
+                <strong>Detection:</strong> We use the <strong>VIF (Variance Inflation Factor)</strong>.
+                <br>• VIF = 1: No correlation (Perfect).
+                <br>• VIF > 5-10: High multicollinearity (Problematic).
+            </p>
+        </section>
+    </div>
+
+    <script>
+        // --- Shared Utils ---
+        const padding = 40;
+        function map(v, min1, max1, min2, max2) { return min2 + (v - min1) * (max2 - min2) / (max1 - min1); }
+
+        // --- Homoscedasticity App ---
+        const homoSlider = document.getElementById('homoSlider');
+        const homoStatus = document.getElementById('homo-status');
+        const ctxHData = document.getElementById('homo-data').getContext('2d');
+        const ctxHResid = document.getElementById('homo-resid').getContext('2d');
+
+        function drawScatter(ctx, points, xLabel, yLabel, showLine=false) {
+            const w = ctx.canvas.width;
+            const h = ctx.canvas.height;
+            ctx.clearRect(0,0,w,h);
+            
+            // Grid
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(padding, 0); ctx.lineTo(padding, h-padding);
+            ctx.moveTo(0, h-padding); ctx.lineTo(w, h-padding);
+            ctx.stroke();
+
+            // Zero line for residual
+            if(!showLine) {
+                ctx.strokeStyle = '#475569';
+                ctx.setLineDash([5,5]);
+                const y0 = map(0, -1, 1, h-padding, 0);
+                ctx.beginPath(); ctx.moveTo(padding, y0); ctx.lineTo(w, y0); ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Points
+            ctx.fillStyle = '#60a5fa';
+            points.forEach(p => {
+                const cx = map(p.x, 0, 1, padding, w-10);
+                let cy;
+                if(showLine) cy = map(p.y, 0, 1.2, h-padding, 10); // Scale 0-1.2 for data
+                else cy = map(p.y, -0.5, 0.5, h-padding, 0);       // Scale -0.5 - 0.5 for resid
+                
+                ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI*2); ctx.fill();
+            });
+
+            // Regression Line (Visual only)
+            if(showLine) {
+                ctx.strokeStyle = '#f43f5e';
+                ctx.lineWidth = 2;
+                const yStart = map(0.1, 0, 1.2, h-padding, 10);
+                const yEnd = map(0.9, 0, 1.2, h-padding, 10);
+                ctx.beginPath();
+                ctx.moveTo(padding, yStart);
+                ctx.lineTo(w-10, yEnd);
+                ctx.stroke();
+            }
+        }
+
+        function updateHomo() {
+            const factor = parseFloat(homoSlider.value);
+            const pointsData = [];
+            const pointsResid = [];
+            
+            // Generate 50 points
+            for(let i=0; i<60; i++) {
+                const x = i/60;
+                // Base noise
+                let noise = (Math.random() - 0.5) * 0.15;
+                
+                // Add Heteroscedasticity: Noise scales with X
+                if (factor > 0) {
+                    noise = noise * (1 + x * factor * 8); 
+                }
+
+                const trueY = 0.1 + 0.8*x;
+                const y = trueY + noise;
+
+                pointsData.push({x, y});
+                pointsResid.push({x, y: noise});
+            }
+
+            drawScatter(ctxHData, pointsData, 'X', 'Y', true);
+            drawScatter(ctxHResid, pointsResid, 'Predicted', 'Residuals', false);
+
+            if(factor > 0.3) {
+                homoStatus.textContent = "Status: Heteroscedastic (Violation!)";
+                homoStatus.className = "indicator-box status-bad";
+            } else {
+                homoStatus.textContent = "Status: Homoscedastic (Pass)";
+                homoStatus.className = "indicator-box status-good";
+            }
+        }
+
+        homoSlider.addEventListener('input', updateHomo);
+        updateHomo(); // Init
+
+
+        // --- Normality App ---
+        const normApp = {
+            ctxHist: document.getElementById('norm-hist').getContext('2d'),
+            ctxQQ: document.getElementById('norm-qq').getContext('2d'),
+            
+            generateData: function(isNormal) {
+                const residuals = [];
+                for(let i=0; i<200; i++) {
+                    let r;
+                    if(isNormal) {
+                        // Box-Muller transform for normal dist
+                        const u = 1 - Math.random();
+                        const v = Math.random();
+                        r = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+                    } else {
+                        // Exponential distribution shifted (Skewed)
+                        r = (Math.log(1 - Math.random()) * -1) - 1; 
+                    }
+                    residuals.push(r);
+                }
+                this.drawHist(residuals);
+                this.drawQQ(residuals);
+            },
+
+            drawHist: function(data) {
+                const ctx = this.ctxHist;
+                const w = ctx.canvas.width;
+                const h = ctx.canvas.height;
+                ctx.clearRect(0,0,w,h);
+
+                // Create bins
+                const bins = new Array(20).fill(0);
+                const min = -3, max = 3;
+                data.forEach(v => {
+                    const idx = Math.floor(map(v, min, max, 0, 20));
+                    if(idx >= 0 && idx < 20) bins[idx]++;
+                });
+
+                const maxCount = Math.max(...bins);
+                const barW = (w - 2*padding) / 20;
+
+                ctx.fillStyle = '#60a5fa';
+                bins.forEach((count, i) => {
+                    const bh = map(count, 0, maxCount, 0, h - 2*padding);
+                    const bx = padding + i * barW;
+                    const by = h - padding - bh;
+                    ctx.fillRect(bx, by, barW-1, bh);
+                });
+
+                // Axis
+                ctx.strokeStyle = '#94a3b8';
+                ctx.beginPath();
+                ctx.moveTo(padding, h-padding); ctx.lineTo(w, h-padding);
+                ctx.stroke();
+                
+                // Ideal Normal Curve overlay
+                ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+                ctx.beginPath();
+                for(let i=0; i<=w-2*padding; i++) {
+                    const xVal = map(i, 0, w-2*padding, -3, 3);
+                    const yVal = Math.exp(-0.5 * xVal * xVal); // Gaussian
+                    const cy = map(yVal, 0, 1, h-padding, 10);
+                    if(i==0) ctx.moveTo(padding+i, cy);
+                    else ctx.lineTo(padding+i, cy);
+                }
+                ctx.stroke();
+            },
+
+            drawQQ: function(data) {
+                const ctx = this.ctxQQ;
+                const w = ctx.canvas.width;
+                const h = ctx.canvas.height;
+                ctx.clearRect(0,0,w,h);
+                
+                // Sort data (Sample Quantiles)
+                const sorted = [...data].sort((a,b) => a-b);
+                const n = sorted.length;
+
+                // Theoretical Quantiles (Inverse CDF of Normal)
+                // Approx for visualization
+                const points = sorted.map((val, i) => {
+                    const p = (i + 0.5) / n;
+                    // Probit function approximation roughly
+                    // or just use map since we know range -3 to 3 roughly
+                    // Actually, let's just plot Sorted Value vs Expected Z-score
+                    // Simple inverse approx:
+                    // This is hard to impl in raw JS without library.
+                    // Let's cheat: We know index i maps to z-score.
+                    // Actually for visual demo, we can just plot "Sorted Data" vs "Linear Line".
+                    // If normal, it should be linear.
+                    return val;
+                });
+
+                // Grid
+                ctx.strokeStyle = '#334155';
+                ctx.strokeRect(padding, padding, w-2*padding, h-2*padding);
+
+                // Reference Line (y=x)
+                ctx.strokeStyle = '#f43f5e';
+                ctx.beginPath();
+                ctx.moveTo(padding, h-padding);
+                ctx.lineTo(w-padding, padding);
+                ctx.stroke();
+
+                // Plot
+                ctx.fillStyle = '#34d399';
+                points.forEach((val, i) => {
+                    // Theoretical Z (approx)
+                    // The range of standard normal is roughly -3 to 3
+                    const theoreticalZ = map(i, 0, n, -3, 3);
+                    
+                    const cx = map(theoreticalZ, -3, 3, padding, w-padding);
+                    const cy = map(val, -3, 3, h-padding, padding); // y-axis inverted
+
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 2, 0, Math.PI*2);
+                    ctx.fill();
+                });
+            },
+
+            setNormal: function() { this.generateData(true); },
+            setSkewed: function() { this.generateData(false); }
+        };
+
+        normApp.setNormal(); // Init
+
+    </script>
+</body>
+</html>

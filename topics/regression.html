@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear & Polynomial Regression - ML Encyclopedia</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* Specific styles for this topic page */
+        .content-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        h2 {
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-top: 2rem;
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Animation Section */
+        .interactive-demo {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        canvas {
+            background: #0f172a;
+            border-radius: 8px;
+            cursor: crosshair;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            max-width: 100%;
+        }
+
+        .controls {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        button {
+            background: var(--card-bg);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        button.primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        button.primary:hover {
+            background: #3b82f6;
+        }
+
+        .stats-panel {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+            color: var(--text-muted);
+            font-family: monospace;
+            font-size: 1.1rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item span {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .explanation {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        input[type="range"] {
+            accent-color: var(--primary-color);
+        }
+
+        .multiple-viz {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .code-block {
+            background: #0f172a;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            color: #a5b4fc;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <a href="../index.html" class="back-link">← Back to Master Index</a>
+        
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+            <h1>Regression Models</h1>
+            
+            <div class="understanding-widget" id="rating-widget" data-topic="regression">
+                <span class="understanding-label">Understanding:</span>
+                <div class="rating-box" data-value="1"></div>
+                <div class="rating-box" data-value="2"></div>
+                <div class="rating-box" data-value="3"></div>
+                <div class="rating-box" data-value="4"></div>
+                <div class="rating-box" data-value="5"></div>
+            </div>
+        </div>
+
+        <script>
+            // Simple Rating Logic
+            (function() {
+                const widget = document.getElementById('rating-widget');
+                if(!widget) return;
+                
+                const topicId = widget.getAttribute('data-topic');
+                const boxes = widget.querySelectorAll('.rating-box');
+                
+                // Load Saved
+                const savedRating = localStorage.getItem('rating-' + topicId) || 0;
+                updateVisuals(savedRating);
+
+                boxes.forEach(box => {
+                    box.addEventListener('click', () => {
+                        const val = box.getAttribute('data-value');
+                        localStorage.setItem('rating-' + topicId, val);
+                        updateVisuals(val);
+                    });
+                });
+
+                function updateVisuals(rating) {
+                    boxes.forEach(b => {
+                        if(parseInt(b.getAttribute('data-value')) <= rating) {
+                            b.classList.add('filled');
+                        } else {
+                            b.classList.remove('filled');
+                        }
+                    });
+                }
+            })();
+        </script>
+        
+        <section id="simple-regression">
+            <h2>1. Simple Linear Regression</h2>
+            <p>
+                <strong>Simple Linear Regression</strong> models the relationship between a single independent variable (Input, $x$) and a dependent variable (Output, $y$) using a straight line.
+            </p>
+            <div class="interactive-demo">
+                <h3>Linear Engine (Degree 1)</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 1rem;">Click to add points.</p>
+                
+                <canvas id="linearCanvas" width="800" height="400"></canvas>
+                
+                <div class="stats-panel">
+                    <div class="stat-item">Equation: <span id="lin-eq">y = 0x + 0</span></div>
+                    <div class="stat-item">MSE: <span id="lin-mse">0.00</span></div>
+                </div>
+
+                <div class="controls">
+                    <button onclick="linearApp.addRandomPoints()">Random Points</button>
+                    <button onclick="linearApp.clear()">Clear</button>
+                    <button class="primary" onclick="linearApp.fit()">Animate Best Fit</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="polynomial-regression">
+            <h2>2. Polynomial Regression</h2>
+            <p>
+                What if the data isn't straight? <strong>Polynomial Regression</strong> fits a curve by adding powers of $x$ ($x^2, x^3...$).
+            </p>
+            <p>
+                This is still "Linear Regression" technically, because it is linear in the <em>parameters</em> (coefficients), even though it produces a curved line.
+            </p>
+            
+            <div class="interactive-demo">
+                <h3>Polynomial Engine (Non-Linear)</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 1rem;">
+                    Try adding points in a "U" or "S" shape.
+                </p>
+                
+                <canvas id="polyCanvas" width="800" height="400"></canvas>
+                
+                <div class="stats-panel">
+                    <div class="slider-container">
+                        <label for="polyDegree">Degree:</label>
+                        <input type="range" id="polyDegree" min="1" max="6" value="2" oninput="document.getElementById('degreeDisplay').innerText = this.value; polyApp.fit()">
+                        <span id="degreeDisplay" style="color:var(--primary-color); font-size: 1.2rem;">2</span>
+                    </div>
+                    <div class="stat-item">MSE: <span id="poly-mse">0.00</span></div>
+                </div>
+
+                <div class="controls">
+                    <button onclick="polyApp.addCurvePoints()">Generate Curve Data</button>
+                    <button onclick="polyApp.clear()">Clear</button>
+                    <button class="primary" onclick="polyApp.fit()">Fit Curve</button>
+                </div>
+
+                <div class="explanation">
+                    <h4>The Danger of Overfitting</h4>
+                    <p>
+                        Try setting the <strong>Degree</strong> to 6 with only a few points. Notice how the curve goes wild trying to hit every single point? That is <strong>Overfitting</strong>. The model is memorizing the noise instead of learning the pattern.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="multiple-regression">
+            <h2>3. Multiple Linear Regression</h2>
+            <p>
+                While Simple/Poly Regression uses one input ($x$), <strong>Multiple Linear Regression</strong> uses multiple independent variables ($x_1, x_2, ...$).
+            </p>
+            <div class="multiple-viz">
+                <div>
+                    <h3>Equation Comparison</h3>
+                    <div class="code-block">
+                        <strong>Simple (Line):</strong><br>
+                        y = b + w₁x<br><br>
+                        <strong>Polynomial (Curve):</strong><br>
+                        y = b + w₁x + w₂x² + w₃x³<br><br>
+                        <strong>Multiple (Plane):</strong><br>
+                        y = b + w₁x₁ + w₂x₂ + w₃x₃
+                    </div>
+                </div>
+                <div>
+                    <h3>Key Difference</h3>
+                    <p>
+                        In Multiple Regression, we fit a <strong>Hyperplane</strong>.
+                        We cannot visualize this easily on a 2D screen, but the math (minimizing squared errors) remains exactly the same.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // --- Shared Math & Graphics Utilities ---
+        const padding = 40;
+
+        function toCanvasX(x, width) { return padding + x * (width - 2 * padding); }
+        function toCanvasY(y, height) { return height - padding - y * (height - 2 * padding); }
+        function fromCanvasX(cx, width) { return (cx - padding) / (width - 2 * padding); }
+        function fromCanvasY(cy, height) { return (height - padding - cy) / -(height - 2 * padding); }
+
+        function drawGrid(ctx, width, height) {
+            ctx.clearRect(0, 0, width, height);
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, 0); ctx.lineTo(padding, height);
+            ctx.moveTo(0, height - padding); ctx.lineTo(width, height - padding);
+            ctx.stroke();
+            
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '12px monospace';
+            ctx.fillText('0', padding - 15, height - padding + 15);
+        }
+
+        function drawPoints(ctx, points, width, height) {
+            ctx.fillStyle = '#60a5fa';
+            points.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(toCanvasX(p.x, width), toCanvasY(p.y, height), 6, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        // Gaussian Elimination Solver for Ax = b
+        function solveLinearSystem(A, b) {
+            const n = A.length;
+            // Augment A with b
+            for (let i = 0; i < n; i++) A[i].push(b[i]);
+
+            // Forward elimination
+            for (let i = 0; i < n; i++) {
+                // Find pivot
+                let maxRow = i;
+                for (let k = i + 1; k < n; k++) {
+                    if (Math.abs(A[k][i]) > Math.abs(A[maxRow][i])) maxRow = k;
+                }
+                
+                // Swap
+                [A[i], A[maxRow]] = [A[maxRow], A[i]];
+
+                // Make all rows below this one 0 in current column
+                for (let k = i + 1; k < n; k++) {
+                    const c = -A[k][i] / A[i][i];
+                    for (let j = i; j < n + 1; j++) {
+                        if (i === j) A[k][j] = 0;
+                        else A[k][j] += c * A[i][j];
+                    }
+                }
+            }
+
+            // Back substitution
+            const x = new Array(n).fill(0);
+            for (let i = n - 1; i >= 0; i--) {
+                let sum = 0;
+                for (let j = i + 1; j < n; j++) sum += A[i][j] * x[j];
+                x[i] = (A[i][n] - sum) / A[i][i];
+            }
+            return x;
+        }
+
+        // --- Class: Linear Regression Demo ---
+        class LinearDemo {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.width = this.canvas.width;
+                this.height = this.canvas.height;
+                this.points = [];
+                this.m = 0; this.b = 0;
+                
+                this.setupEvents();
+                this.render();
+            }
+
+            setupEvents() {
+                this.canvas.addEventListener('mousedown', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    const x = fromCanvasX(e.clientX - rect.left, this.width);
+                    const y = fromCanvasY(e.clientY - rect.top, this.height);
+                    if(x >= 0 && x <= 1 && y >= 0 && y <= 1) {
+                        this.points.push({x, y});
+                        this.render();
+                    }
+                });
+            }
+
+            addRandomPoints() {
+                const tm = Math.random() * 2 - 1;
+                const tb = Math.random() * 0.5 + 0.25;
+                for(let i=0; i<5; i++) {
+                    const x = Math.random();
+                    const y = Math.max(0, Math.min(1, tm * x + tb + (Math.random()-0.5)*0.2));
+                    this.points.push({x, y});
+                }
+                this.render();
+            }
+
+            clear() { this.points = []; this.m = 0; this.b = 0; this.render(); }
+
+            fit() {
+                if(this.points.length < 2) return;
+                const n = this.points.length;
+                let sx=0, sy=0, sxy=0, sxx=0;
+                this.points.forEach(p => { sx+=p.x; sy+=p.y; sxy+=p.x*p.y; sxx+=p.x*p.x; });
+                const targetM = (n*sxy - sx*sy)/(n*sxx - sx*sx);
+                const targetB = (sy - targetM*sx)/n;
+
+                // Animation
+                let startM = this.m, startB = this.b;
+                let progress = 0;
+                const animate = () => {
+                    progress += 0.05;
+                    if(progress >= 1) progress = 1;
+                    
+                    // Ease out
+                    const ease = 1 - Math.pow(1 - progress, 3);
+                    this.m = startM + (targetM - startM) * ease;
+                    this.b = startB + (targetB - startB) * ease;
+                    
+                    this.render();
+                    if(progress < 1) requestAnimationFrame(animate);
+                };
+                animate();
+            }
+
+            render() {
+                drawGrid(this.ctx, this.width, this.height);
+                
+                // Draw Line
+                const startY = this.m * 0 + this.b;
+                const endY = this.m * 1 + this.b;
+                this.ctx.strokeStyle = '#f43f5e';
+                this.ctx.lineWidth = 3;
+                this.ctx.beginPath();
+                this.ctx.moveTo(toCanvasX(0, this.width), toCanvasY(startY, this.height));
+                this.ctx.lineTo(toCanvasX(1, this.width), toCanvasY(endY, this.height));
+                this.ctx.stroke();
+
+                // Residuals
+                this.ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+                this.ctx.lineWidth = 1;
+                this.ctx.setLineDash([5,5]);
+                let mse = 0;
+                this.points.forEach(p => {
+                    const py = this.m * p.x + this.b;
+                    mse += Math.pow(p.y - py, 2);
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(toCanvasX(p.x, this.width), toCanvasY(p.y, this.height));
+                    this.ctx.lineTo(toCanvasX(p.x, this.width), toCanvasY(py, this.height));
+                    this.ctx.stroke();
+                });
+                this.ctx.setLineDash([]);
+                if(this.points.length) mse /= this.points.length;
+
+                drawPoints(this.ctx, this.points, this.width, this.height);
+                
+                document.getElementById('lin-eq').innerText = `y = ${this.m.toFixed(2)}x + ${this.b.toFixed(2)}`;
+                document.getElementById('lin-mse').innerText = mse.toFixed(4);
+            }
+        }
+
+        // --- Class: Polynomial Regression Demo ---
+        class PolyDemo {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.width = this.canvas.width;
+                this.height = this.canvas.height;
+                this.points = [];
+                this.coeffs = [0, 0]; // y = c0 + c1*x + ...
+                
+                this.setupEvents();
+                this.render();
+            }
+
+            setupEvents() {
+                this.canvas.addEventListener('mousedown', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    const x = fromCanvasX(e.clientX - rect.left, this.width);
+                    const y = fromCanvasY(e.clientY - rect.top, this.height);
+                    if(x >= 0 && x <= 1 && y >= 0 && y <= 1) {
+                        this.points.push({x, y});
+                        this.fit(); // Auto-fit for poly feels better
+                    }
+                });
+            }
+
+            addCurvePoints() {
+                this.clear();
+                // Generate a generic sine-like curve
+                for(let i=0; i<8; i++) {
+                    const x = 0.1 + (i/8) * 0.8;
+                    const y = 0.5 + 0.4 * Math.sin(x * Math.PI * 2) + (Math.random()-0.5)*0.1;
+                    this.points.push({x, y: Math.max(0, Math.min(1, y))});
+                }
+                this.fit();
+            }
+
+            clear() {
+                this.points = [];
+                this.coeffs = new Array(parseInt(document.getElementById('polyDegree').value) + 1).fill(0);
+                this.render();
+            }
+
+            fit() {
+                const degree = parseInt(document.getElementById('polyDegree').value);
+                if(this.points.length < degree + 1) {
+                    this.render();
+                    return;
+                }
+
+                // Prepare Normal Equation matrices: (X^T * X) * w = X^T * y
+                // Matrix sizes: X is N x (d+1), y is N x 1
+                // XtX is (d+1) x (d+1)
+                // Xty is (d+1) x 1
+
+                const d = degree + 1;
+                let XtX = Array.from({ length: d }, () => Array(d).fill(0));
+                let Xty = Array(d).fill(0);
+
+                // Build matrices
+                for (let p of this.points) {
+                    // precompute powers of x
+                    let powers = [];
+                    for(let k=0; k<2*d; k++) powers.push(Math.pow(p.x, k));
+
+                    for (let row = 0; row < d; row++) {
+                        for (let col = 0; col < d; col++) {
+                            XtX[row][col] += powers[row + col];
+                        }
+                        Xty[row] += p.y * powers[row];
+                    }
+                }
+
+                // Solve
+                try {
+                    this.coeffs = solveLinearSystem(XtX, Xty);
+                } catch(e) {
+                    console.error("Matrix singular?");
+                }
+                this.render();
+            }
+
+            render() {
+                drawGrid(this.ctx, this.width, this.height);
+
+                // Draw Curve
+                this.ctx.strokeStyle = '#34d399'; // Greenish
+                this.ctx.lineWidth = 3;
+                this.ctx.beginPath();
+                
+                // Sample points across the canvas
+                for (let px = 0; px <= this.width; px += 2) {
+                    const x = fromCanvasX(px, this.width);
+                    
+                    // Evaluate polynomial
+                    let y = 0;
+                    for(let i=0; i<this.coeffs.length; i++) {
+                        y += this.coeffs[i] * Math.pow(x, i);
+                    }
+                    
+                    const py = toCanvasY(y, this.height);
+                    if (px === 0) this.ctx.moveTo(px, py);
+                    else this.ctx.lineTo(px, py);
+                }
+                this.ctx.stroke();
+
+                drawPoints(this.ctx, this.points, this.width, this.height);
+                
+                // Calc MSE
+                let mse = 0;
+                if(this.points.length > 0) {
+                    this.points.forEach(p => {
+                        let pred = 0;
+                        for(let i=0; i<this.coeffs.length; i++) pred += this.coeffs[i] * Math.pow(p.x, i);
+                        mse += Math.pow(p.y - pred, 2);
+                    });
+                    mse /= this.points.length;
+                }
+                document.getElementById('poly-mse').innerText = mse.toFixed(4);
+            }
+        }
+
+        const linearApp = new LinearDemo('linearCanvas');
+        const polyApp = new PolyDemo('polyCanvas');
+
+        // Initial setup
+        linearApp.addRandomPoints();
+        linearApp.fit();
+        
+    </script>
+</body>
+</html>

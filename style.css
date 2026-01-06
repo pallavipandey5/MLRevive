@@ -1,0 +1,346 @@
+:root {
+    --primary-color: #60a5fa; /* Blue 400 */
+    --primary-glow: rgba(96, 165, 250, 0.4);
+    --bg-color: #0f172a; /* Slate 900 */
+    --card-bg: #1e293b; /* Slate 800 */
+    --text-color: #e2e8f0; /* Slate 200 */
+    --text-muted: #94a3b8; /* Slate 400 */
+    --border-color: #334155; /* Slate 700 */
+    --success-color: #34d399; /* Emerald 400 */
+    --hover-bg: #28364d; /* Slightly lighter than card-bg */
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+    padding: 2rem 1rem;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 20%);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    padding: 3rem;
+    border-radius: 16px;
+    box-shadow: 
+        0 10px 25px -5px rgba(0, 0, 0, 0.5), 
+        0 8px 10px -6px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    border: 1px solid var(--border-color);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 2rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #60a5fa 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+}
+
+h2 {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 0;
+}
+
+.subtitle {
+    font-style: italic;
+    color: var(--text-muted);
+    opacity: 0.8;
+}
+
+/* Progress Bar */
+.progress-container {
+    margin-top: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.progress-bar-bg {
+    background-color: #334155;
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px var(--primary-glow);
+}
+
+.part {
+    margin-bottom: 3rem;
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.part h3 {
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    border-left: 4px solid var(--primary-color);
+    padding-left: 1.25rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(90deg, rgba(96, 165, 250, 0.1) 0%, transparent 100%);
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-radius: 0 8px 8px 0;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+}
+
+.topic-list {
+    list-style: none;
+    padding: 0;
+}
+
+.topic-item {
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.02);
+    transition: all 0.2s ease;
+}
+
+.topic-item:hover {
+    background-color: var(--hover-bg);
+    border-color: #475569;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.topic-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.topic-checkbox {
+    appearance: none;
+    width: 1.4rem;
+    height: 1.4rem;
+    margin-right: 1.25rem;
+    cursor: pointer;
+    border: 2px solid #475569;
+    border-radius: 4px;
+    background-color: #1e293b;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.topic-checkbox:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.topic-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 1rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+}
+
+.topic-link, .topic-title {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex-grow: 1;
+    transition: color 0.2s;
+}
+
+.topic-link:hover {
+    color: var(--primary-color);
+}
+
+.subtopic-link {
+    text-decoration: none;
+    color: inherit;
+    flex-grow: 1;
+}
+
+.subtopic-link:hover .subtopic-text {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* Subtopics */
+.subtopic-list {
+    list-style-type: none;
+    margin-top: 0.75rem;
+    margin-left: 0.5rem;
+    padding-left: 2.25rem;
+    border-left: 2px solid #334155;
+}
+
+.subtopic-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+    margin-bottom: 0.25rem;
+}
+
+.subtopic-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
+}
+
+.subtopic-text {
+    flex-grow: 1;
+    margin-right: 1.5rem;
+}
+
+.subtopic-checkbox {
+    appearance: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: pointer;
+    border: 2px solid #475569;
+    border-radius: 3px;
+    background-color: transparent;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.subtopic-checkbox:checked {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.subtopic-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    color: #0f172a;
+    font-size: 0.8rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+}
+
+/* Completed States */
+.subtopic-item:has(.subtopic-checkbox:checked) .subtopic-text {
+    text-decoration: line-through;
+    color: #475569;
+    opacity: 0.7;
+}
+
+.topic-item:has(.topic-checkbox:checked) .topic-link {
+    color: var(--text-muted);
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.topic-item:has(.topic-checkbox:checked) .subtopic-list {
+    opacity: 0.4;
+    filter: grayscale(1);
+    transition: opacity 0.3s;
+}
+
+/* Understanding Rating Widget */
+.understanding-widget {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0,0,0,0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.understanding-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.rating-box {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #475569;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 3px;
+}
+
+.rating-box:hover,
+.rating-box.filled {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
+}
+
+.rating-box:hover ~ .rating-box {
+    /* If we hover one, following ones stay empty.
+       But we want previous ones to light up on hover? 
+       CSS hover on previous siblings is hard.
+       We will rely on JS for the complex interactions or just simple hover.
+       Let's stick to simple CSS hover for the specific box + JS for logic.
+    */
+    opacity: 0.5; 
+}
+
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        padding: 1.5rem;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .topic-item {
+        padding: 1rem;
+    }
+}

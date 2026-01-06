@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistical Inference - ML Encyclopedia</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .content-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        h2 {
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-top: 2rem;
+        }
+
+        p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
+
+        .highlight {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Demo Containers */
+        .demo-section {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        canvas {
+            background: #0f172a;
+            border-radius: 8px;
+            width: 100%;
+            border: 1px solid #334155;
+            margin-bottom: 1rem;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        button {
+            background: var(--card-bg);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        button:hover { background: var(--primary-color); color: white; }
+
+        .stat-display {
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: #e2e8f0;
+        }
+
+        .explanation {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 1rem;
+        }
+
+        /* CI Visualization Specifics */
+        .ci-row { display: flex; align-items: center; height: 30px; margin-bottom: 5px; }
+        .ci-bar { height: 4px; border-radius: 2px; position: relative; }
+        .ci-dot { width: 8px; height: 8px; border-radius: 50%; position: absolute; top: -2px; transform: translateX(-50%); background: white; }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <a href="../index.html" class="back-link">← Back to Master Index</a>
+        
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+            <h1>Statistical Inference</h1>
+
+            <div class="understanding-widget" id="rating-widget" data-topic="statistical_inference">
+                <span class="understanding-label">Understanding:</span>
+                <div class="rating-box" data-value="1"></div>
+                <div class="rating-box" data-value="2"></div>
+                <div class="rating-box" data-value="3"></div>
+                <div class="rating-box" data-value="4"></div>
+                <div class="rating-box" data-value="5"></div>
+            </div>
+        </div>
+
+        <script>
+            (function() {
+                const widget = document.getElementById('rating-widget');
+                const topicId = widget.getAttribute('data-topic');
+                const boxes = widget.querySelectorAll('.rating-box');
+                const savedRating = localStorage.getItem('rating-' + topicId) || 0;
+                updateVisuals(savedRating);
+                boxes.forEach(box => {
+                    box.addEventListener('click', () => {
+                        const val = box.getAttribute('data-value');
+                        localStorage.setItem('rating-' + topicId, val);
+                        updateVisuals(val);
+                    });
+                });
+                function updateVisuals(rating) {
+                    boxes.forEach(b => {
+                        if(parseInt(b.getAttribute('data-value')) <= rating) b.classList.add('filled');
+                        else b.classList.remove('filled');
+                    });
+                }
+            })();
+        </script>
+        <p>
+            <strong>Statistical Inference</strong> is the process of using data analysis to deduce properties of an underlying distribution of probability. Essentially, it's about making conclusions about a <em>population</em> based on a <em>sample</em>.
+        </p>
+
+        <div class="explanation" style="border-left: 4px solid var(--success-color); background: rgba(52, 211, 153, 0.05);">
+            <strong>ADHD friendly explanation:</strong><br>
+            | We have a probability distribution | ➔ We do data analysis on it | ➔ That is the process | ➔ This process is Statistical Inference | ➔ Output = Conclusion |
+        </div>
+
+        <!-- 1. Hypothesis Testing -->
+        <section>
+            <h2>1. Null Hypothesis ($H_{0}$) & P-Value</h2>
+            <p>
+                In statistical hypothesis testing, we use the <strong>Null Hypothesis ($H_{0}$)</strong> and the <strong>P-Value</strong> together to determine if a result is a real effect or just a lucky coincidence.
+            </p>
+
+            <div style="margin-left: 1rem; margin-bottom: 2rem;">
+                <h3 style="color: var(--primary-color);">Step 1: The Null Hypothesis ($H_{0}$)</h3>
+                <p>
+                    The null hypothesis is NOT a proven fact. It is just our starting stance of skepticism.
+                    Think of it like <strong>"Innocent until proven guilty"</strong> in a courtroom.
+                </p>
+                <p>
+                    We <em>assume</em> the defendant is innocent ($H_0$: No Crime/Effect) not because we have proven they are innocent, but because we need a neutral starting point before looking at the evidence.
+                </p>
+                <p>
+                    <span style="color: var(--success-color);"><strong>Example:</strong></span> If you are testing a new drug, we start by assuming <strong>"This drug does nothing" ($H_0$)</strong>. We hold onto this assumption until the data (evidence) becomes so strong that we are forced to abandon it.
+                </p>
+
+                <h3 style="color: var(--primary-color);">Step 2: The P-Value</h3>
+                <p>
+                    The p-value is a probability (ranging from 0 to 1) that represents how likely it is to observe your specific results <strong>if the null hypothesis were actually true</strong>.
+                </p>
+                <ul style="color: var(--text-muted); list-style-type: none; padding-left: 0;">
+                    <li style="margin-bottom: 0.5rem;">🔹 <strong>Low P-Value (≤ 0.05):</strong> Indicates the results are "strange" or unlikely under the null hypothesis. This gives us evidence to <strong>Reject $H_{0}$</strong>. (Statistically Significant).</li>
+                    <li>🔹 <strong>High P-Value (> 0.05):</strong> Indicates the results are consistent with chance. We <strong>Fail to Reject $H_{0}$</strong>.</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color);">Step 3: Decision Making</h3>
+                <p>
+                    We compare the p-value to a pre-set threshold called the <strong>Significance Level ($\alpha$)</strong>, which is most commonly <strong>0.05</strong>. If our P-Value is smaller than $\alpha$, we conclude the effect is real!
+                </p>
+            </div>
+            
+            <div class="demo-section">
+                <h3>Visualizing the "Luck" Probability</h3>
+                <p style="font-size: 0.9rem;">The curve represents the <strong>Null Hypothesis</strong> (e.g., the drug does nothing). Drag the slider to see how likely your experimental result would be if the drug actually had 0 effect.</p>
+                
+                <canvas id="pValCanvas" width="800" height="300"></canvas>
+                
+                <div class="controls">
+                    <label>Observed Effect Strength:</label>
+                    <input type="range" id="tScoreSlider" min="-4" max="4" step="0.1" value="0">
+                    <span id="tScoreDisplay" class="stat-display">t = 0.00</span>
+                    <span id="pValDisplay" class="stat-display" style="color: #34d399; margin-left: 1rem;">P-Value = 0.50</span>
+                </div>
+
+                <div class="explanation">
+                    <h4>How to read the graph?</h4>
+                    <p id="pValExplanation">
+                        Drag the slider to the right (Effect Strength > 2.0). <br>
+                        The <span style="color:#f43f5e">Red Area</span> is the P-Value. It shows how much of the "Zero Effect" distribution matches your result.<br>
+                        If the <strong>P-Value is tiny (Red area disappears)</strong>, it means your result is too big to be a coincidence!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Detailed Logic Section -->
+            <div style="margin-top: 3rem;">
+                <h2>Deep Dive: The Calculation & Logic</h2>
+                
+                <h3 style="color: var(--text-color);">1. The "Formula"</h3>
+                <p>
+                    There isn't one single formula, but the general logic for finding P is:
+                </p>
+                <div style="background: var(--bg-color); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); font-family: monospace; color: #a5b4fc; margin-bottom: 1.5rem;">
+                    Step 1: Calculate Test Statistic (Z) = (Observed - Expected) / Error<br>
+                    Step 2: P-Value = Area under the curve beyond Z
+                </div>
+                <p>
+                    <strong>Why Low P = Reject Null?</strong><br>
+                    Think of P as the "Probability of Coincidence".
+                    <br>• If P = 0.03 (3%), it means there is only a 3% chance this happened by luck. That's too rare. So we assume it wasn't luck (Reject Null).
+                    <br>• If P = 0.40 (40%), it means there's a 40% chance this was just noise. That happens all the time. So we assume it was just noise (Keep Null).
+                </p>
+
+                <!-- ADHD Friendly Example Box -->
+                <div class="explanation" style="border-left: 4px solid var(--success-color); background: rgba(52, 211, 153, 0.05);">
+                    <strong>ADHD Friendly Example: The Cat Detector</strong>
+                    <br><br>
+                    <strong>Scenario:</strong> You have <strong>Model A</strong> (Untrained/Random) and <strong>Model B</strong> (New/Trained).
+                    <br><strong>Null Hypothesis ($H_0$):</strong> "Model B is just as dumb as Model A (Random guessing)."
+                    <br><br>
+                    <strong>The Test:</strong> Both models classify 100 images.
+                    <br>• Model A gets 50 right (50%).
+                    <br>• Model B gets 65 right (65%).
+                    <br><br>
+                    <strong>Calculation:</strong> "What are the odds of a random guesser getting 65%?"
+                    <br><strong>Result (P-Value):</strong> 0.03 (3%).
+                    <br><br>
+                    <strong>Conclusion:</strong>
+                    <br>• <strong>P = 0.03:</strong> Only a 3% chance a dummy model gets this score. That's super rare!
+                    <br>• <strong>Decision:</strong> Model B is NOT guessing. It actually learned! (Reject Null).
+                    <br><br>
+                    <em>(Contrast: If Model B got 52 right, P-value might be 0.40. "40% chance of luck? Yeah, it's probably just guessing.")</em>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Confidence Intervals -->
+        <section>
+            <h2>2. Confidence Intervals (CI)</h2>
+            <p>
+                Instead of a single number estimate, a <strong>Confidence Interval</strong> gives us a range that is likely to contain the true population parameter.
+            </p>
+            <p>
+                <strong>"95% Confidence"</strong> means: If we repeated this experiment 100 times, 95 of the calculated intervals would capture the true value.
+            </p>
+
+            <div class="demo-section">
+                <h3>Simulation: Catching the True Mean</h3>
+                <p style="font-size: 0.9rem;">
+                    The vertical white line is the <strong>True Population Mean</strong> (Hidden from the observer).<br>
+                    Click "Sample" to run an experiment and generate an interval.
+                </p>
+
+                <canvas id="ciCanvas" width="800" height="400"></canvas>
+
+                <div class="controls">
+                    <button onclick="ciApp.sampleOne()">Take 1 Sample</button>
+                    <button onclick="ciApp.sampleMany()">Take 20 Samples</button>
+                    <button onclick="ciApp.reset()">Reset</button>
+                </div>
+                
+                <div style="text-align: center; margin-top: 1rem;">
+                    <span class="stat-display">Success Rate: <span id="ciSuccessRate">0%</span></span>
+                    <span style="color: #94a3b8; font-size: 0.9rem;">(Target: ~95%)</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // --- Shared Utils ---
+        const padding = 40;
+        function map(v, min1, max1, min2, max2) { return min2 + (v - min1) * (max2 - min2) / (max1 - min1); }
+        
+        // Gaussian Function
+        function gaussian(x, mu, sigma) {
+            return (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
+        }
+
+        // CDF of Normal Distribution (approx)
+        function normalCDF(x) {
+            var t = 1 / (1 + .2316419 * Math.abs(x));
+            var d = .3989423 * Math.exp(-x * x / 2);
+            var prob = d * t * (.3193815 + t * (-.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+            if (x > 0) prob = 1 - prob;
+            return prob;
+        }
+
+        // --- P-Value App ---
+        const pCanvas = document.getElementById('pValCanvas');
+        const ctxP = pCanvas.getContext('2d');
+        const sliderP = document.getElementById('tScoreSlider');
+        const tDisp = document.getElementById('tScoreDisplay');
+        const pDisp = document.getElementById('pValDisplay');
+
+        function drawPValue() {
+            const w = pCanvas.width;
+            const h = pCanvas.height;
+            const t = parseFloat(sliderP.value);
+            
+            ctxP.clearRect(0,0,w,h);
+
+            // Draw Normal Curve
+            ctxP.beginPath();
+            ctxP.strokeStyle = '#60a5fa';
+            ctxP.lineWidth = 2;
+            
+            const mu = 0;
+            const sigma = 1;
+            const scaleX = (w - 2*padding) / 8; // -4 to 4 range
+            const scaleY = h * 0.8; // Peak height
+            const centerX = w / 2;
+            const bottomY = h - padding;
+
+            // Draw Curve Path
+            for(let px = padding; px <= w - padding; px+=2) {
+                const xVal = (px - centerX) / scaleX;
+                const yVal = gaussian(xVal, mu, sigma);
+                const py = bottomY - yVal * scaleY * 2.5; // 2.5 arbitrary visual scale
+                if(px === padding) ctxP.moveTo(px, py);
+                else ctxP.lineTo(px, py);
+            }
+            ctxP.stroke();
+            
+            // Axis
+            ctxP.strokeStyle = '#94a3b8';
+            ctxP.lineWidth = 1;
+            ctxP.beginPath();
+            ctxP.moveTo(padding, bottomY); ctxP.lineTo(w-padding, bottomY);
+            ctxP.stroke();
+
+            // Highlight Tail Area (One-sided for simplicity of visual)
+            // Or Two-sided? Let's do One-Sided Right Tail if t>0, Left if t<0
+            ctxP.fillStyle = 'rgba(244, 63, 94, 0.5)'; // Red
+            ctxP.beginPath();
+            
+            const startX = centerX + t * scaleX;
+            // Draw shape from t to edge
+            if(t >= 0) {
+                for(let px = startX; px <= w-padding; px+=2) {
+                    const xVal = (px - centerX) / scaleX;
+                    const yVal = gaussian(xVal, mu, sigma);
+                    const py = bottomY - yVal * scaleY * 2.5;
+                    if(px === startX) ctxP.moveTo(px, bottomY);
+                    ctxP.lineTo(px, py);
+                }
+                ctxP.lineTo(w-padding, bottomY);
+            } else {
+                 for(let px = padding; px <= startX; px+=2) {
+                    const xVal = (px - centerX) / scaleX;
+                    const yVal = gaussian(xVal, mu, sigma);
+                    const py = bottomY - yVal * scaleY * 2.5;
+                    if(px === padding) ctxP.moveTo(px, bottomY);
+                    ctxP.lineTo(px, py);
+                }
+                ctxP.lineTo(startX, bottomY);
+            }
+            ctxP.closePath();
+            ctxP.fill();
+
+            // Indicator Line
+            ctxP.strokeStyle = '#f43f5e';
+            ctxP.lineWidth = 2;
+            ctxP.setLineDash([5,5]);
+            ctxP.beginPath();
+            ctxP.moveTo(startX, bottomY);
+            ctxP.lineTo(startX, 20);
+            ctxP.stroke();
+            ctxP.setLineDash([]);
+            
+            ctxP.fillStyle = '#e2e8f0';
+            ctxP.textAlign = 'center';
+            ctxP.fillText("Observed t", startX, 15);
+
+            // Update Stats
+            let pVal = 0;
+            if(t >= 0) pVal = 1 - normalCDF(t);
+            else pVal = normalCDF(t);
+            
+            // Let's display 2-sided for scientific rigor usually? 
+            // The prompt implies basic, let's stick to the visual (1-sided) but clarify.
+            // Actually, for "Extreme", usually means both tails. 
+            // Let's do 1-sided to match the visual area exactly.
+            
+            tDisp.textContent = `t = ${t.toFixed(2)}`;
+            pDisp.textContent = `P-Value (1-tail) = ${pVal.toFixed(4)}`;
+            
+            if(pVal < 0.05) pDisp.style.color = '#f43f5e'; // Red (Significant)
+            else pDisp.style.color = '#34d399';
+        }
+
+        sliderP.addEventListener('input', drawPValue);
+        drawPValue();
+
+
+        // --- Confidence Interval App ---
+        const ciApp = {
+            canvas: document.getElementById('ciCanvas'),
+            ctx: document.getElementById('ciCanvas').getContext('2d'),
+            experiments: [],
+            trueMean: 0.5, // 0 to 1 scale
+            
+            sampleOne: function() {
+                // Simulate sampling: Mean + Error
+                // SE (Standard Error) is fixed for demo visual
+                const se = 0.08; 
+                // Random sample mean
+                // Box-Muller for normal random
+                const u = 1 - Math.random();
+                const v = Math.random();
+                const z = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+                
+                const sampleMean = this.trueMean + z * (se / 2); // Less variance for demo
+                const marginOfError = 1.96 * 0.05; // Fixed width for demo simplicity (assume known sigma)
+                
+                const lower = sampleMean - marginOfError;
+                const upper = sampleMean + marginOfError;
+                
+                // Check coverage
+                const caught = (lower <= this.trueMean && upper >= this.trueMean);
+                
+                this.experiments.push({ lower, upper, mean: sampleMean, caught });
+                if(this.experiments.length > 20) this.experiments.shift(); // Keep last 20
+                this.render();
+            },
+
+            sampleMany: function() {
+                let i = 0;
+                const loop = setInterval(() => {
+                    this.sampleOne();
+                    i++;
+                    if(i>=20) clearInterval(loop);
+                }, 50);
+            },
+
+            reset: function() {
+                this.experiments = [];
+                this.render();
+            },
+
+            render: function() {
+                const w = this.canvas.width;
+                const h = this.canvas.height;
+                const ctx = this.ctx;
+                
+                ctx.clearRect(0,0,w,h);
+
+                // Draw Population Truth Line
+                const truthX = map(this.trueMean, 0, 1, padding, w-padding);
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(truthX, 0); ctx.lineTo(truthX, h);
+                ctx.stroke();
+                
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.fillText("True Population Mean", truthX, 15);
+
+                // Draw Intervals
+                const rowHeight = (h - 40) / 20;
+                
+                let successCount = 0;
+                
+                this.experiments.forEach((exp, i) => {
+                    const y = h - 20 - (i * rowHeight);
+                    const x1 = map(exp.lower, 0, 1, padding, w-padding);
+                    const x2 = map(exp.upper, 0, 1, padding, w-padding);
+                    const xm = map(exp.mean, 0, 1, padding, w-padding);
+                    
+                    if(exp.caught) successCount++;
+
+                    // Color
+                    ctx.strokeStyle = exp.caught ? '#34d399' : '#f43f5e';
+                    ctx.fillStyle = exp.caught ? '#34d399' : '#f43f5e';
+                    ctx.lineWidth = 3;
+
+                    // Bar
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y); ctx.lineTo(x2, y);
+                    ctx.stroke();
+
+                    // Mean Dot
+                    ctx.beginPath();
+                    ctx.arc(xm, y, 4, 0, Math.PI*2);
+                    ctx.fill();
+                });
+
+                // Stats
+                const rate = this.experiments.length ? Math.round((successCount / this.experiments.length)*100) : 0;
+                document.getElementById('ciSuccessRate').innerText = `${rate}%`;
+                if(rate < 90) document.getElementById('ciSuccessRate').style.color = '#f43f5e';
+                else document.getElementById('ciSuccessRate').style.color = '#34d399';
+            }
+        };
+        
+        ciApp.render();
+
+    </script>
+</body>
+</html>
