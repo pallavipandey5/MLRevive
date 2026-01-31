@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parameter Optimization - ML Encyclopedia</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\(', '\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .content-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        h2 {
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-top: 2rem;
+        }
+
+        p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
+
+        .highlight-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        /* Demo Section */
+        .demo-section {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        canvas {
+            background: #0f172a;
+            border-radius: 8px;
+            width: 100%;
+            border: 1px solid #334155;
+            margin-bottom: 1rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        button {
+            background: var(--card-bg);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        button:hover { background: var(--primary-color); color: white; }
+        
+        button.primary { background: var(--primary-color); color: white; }
+        button.primary:hover { background: #3b82f6; }
+
+        .stat-display {
+            font-family: monospace;
+            color: #e2e8f0;
+            margin: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <a href="../index.html" class="back-link">← Back to Master Index</a>
+        
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+            <h1>Parameter Optimization</h1>
+            
+            <div class="understanding-widget" id="rating-widget" data-topic="parameter_optimization">
+                <span class="understanding-label">Understanding:</span>
+                <div class="rating-box" data-value="1"></div>
+                <div class="rating-box" data-value="2"></div>
+                <div class="rating-box" data-value="3"></div>
+                <div class="rating-box" data-value="4"></div>
+                <div class="rating-box" data-value="5"></div>
+            </div>
+        </div>
+
+        <script>
+            (function() {
+                const widget = document.getElementById('rating-widget');
+                const topicId = widget.getAttribute('data-topic');
+                const boxes = widget.querySelectorAll('.rating-box');
+                const savedRating = localStorage.getItem('rating-' + topicId) || 0;
+                updateVisuals(savedRating);
+                boxes.forEach(box => {
+                    box.addEventListener('click', () => {
+                        const val = box.getAttribute('data-value');
+                        localStorage.setItem('rating-' + topicId, val);
+                        updateVisuals(val);
+                    });
+                });
+                function updateVisuals(rating) {
+                    boxes.forEach(b => {
+                        if(parseInt(b.getAttribute('data-value')) <= rating) b.classList.add('filled');
+                        else b.classList.remove('filled');
+                    });
+                }
+            })();
+        </script>
+
+                <p>
+
+                    In Machine Learning, "Training" is essentially a search game. We are looking for the "Magic Numbers" <strong>( weights ) ( and ) ( biases )</strong> that allow our math formula to predict the future correctly.
+
+                </p>
+
+        
+
+                <!-- 1. The Goal: Defining the Cost Function -->
+
+                <section>
+
+                    <h2>1. The Goal: Defining the Cost Function</h2>
+
+                    <p>
+
+                        Before we can "optimize" (improve) anything, we need to mathematically define what "bad" looks like. We call this the <strong>( Cost ) ( Function )</strong>.
+
+                    </p>
+
+                    
+
+                    <div style="background: rgba(255,255,255,0.03); border-left: 4px solid #a78bfa; padding: 1.5rem; margin-bottom: 2rem;">
+
+                        <h3 style="margin-top: 0; color: #a78bfa;">The Logic Flow: From Model to Cost</h3>
+
+                        
+
+                        <p><strong>Step 1: The Prediction ($Y'$)</strong><br>
+
+                        We pick some random random values for our parameter $\theta$ (weight) and $b$ (bias).<br>
+
+                        $ Y' = \theta \cdot X + b $
+
+                        </p>
+
+        
+
+                        <p><strong>Step 2: The Comparison (Error)</strong><br>
+
+                        We compare our prediction ($Y'$) against the actual answer ($Y$) to see how far off we are.<br>
+
+                        $ \text{Error} = Y' - Y $
+
+                        </p>
+
+        
+
+                        <p><strong>Step 3: The Cost ($J$)</strong><br>
+
+                        We cannot just add up the errors (negatives) (would) (cancel) (positives). So we square them and take the average. 
+
+                        This final number—the "Average Squared Error"—is what we call the <strong>Cost Function $J(\theta)$</strong>.
+
+                        </p>
+
+                        
+
+                        <div style="text-align: center; font-size: 1.2rem; margin-top: 1rem; color: #e2e8f0;">
+
+                            $ J(\theta) = \frac{1}{n} \sum ( Y'_{pred} - Y_{actual} )^2 $
+
+                        </div>
+
+                    </div>
+
+        
+
+                    <p>
+
+                        <strong>The Optimization Goal:</strong> Changing the weights ($\theta$) to find the specific value that makes $J(\theta)$ as small as possible.
+
+                    </p>
+
+        
+
+                    <div style="text-align: center; margin: 2rem 0;">
+
+                        <svg width="400" height="220" viewBox="0 0 400 220" style="background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid var(--border-color); padding: 10px;">
+
+                            <!-- Axes -->
+
+                            <line x1="50" y1="20" x2="50" y2="180" stroke="#475569" stroke-width="2" />
+
+                            <line x1="50" y1="180" x2="380" y2="180" stroke="#475569" stroke-width="2" />
+
+                            <text x="15" y="100" fill="#94a3b8" font-size="12" transform="rotate(-90 15,100)" font-family="sans-serif">Cost J(theta)</text>
+
+                            <text x="200" y="205" fill="#94a3b8" font-size="12" font-family="sans-serif">Weight (theta)</text>
+
+                            
+
+                            <!-- The Bowl (Parabola) -->
+
+                            <path d="M 80,40 Q 200,300 320,40" stroke="#60a5fa" stroke-width="4" fill="none" stroke-linecap="round" />
+
+                            
+
+                            <!-- Minimum Point -->
+
+                            <circle cx="200" cy="170" r="6" fill="#f43f5e" />
+
+                            <text x="215" y="175" fill="#f43f5e" font-weight="bold" font-size="14" font-family="sans-serif">Goal: Minimize J</text>
+
+                            
+
+                            <!-- Direction Arrows -->
+
+                            <path d="M 120,70 L 150,110" stroke="#34d399" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+
+                            <path d="M 280,70 L 250,110" stroke="#34d399" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+
+                            
+
+                            <defs>
+
+                                <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+
+                                    <path d="M0,0 L10,5 L0,10 Z" fill="#34d399" />
+
+                                </marker>
+
+                            </defs>
+
+                        </svg>
+
+                    </div>
+
+                </section>
+
+        
+
+                <!-- 2. The Solutions: How to Minimize J -->
+
+                <section>
+
+                    <h2>2. The Solutions: How to Minimize $J(\theta)$</h2>
+
+                    <p>
+
+                        Now that we defined the problem (The) (Cost) (Function), we need a method to solve it. There are two main ways to find the bottom of this valley.
+
+                    </p>
+
+                </section>
+
+        
+
+                <!-- Method A: OLS -->
+
+                <section style="margin-left: 1.5rem; border-left: 2px solid #334155; padding-left: 1.5rem;">
+
+                    <h3>Method A: Ordinary Least Squares</h3>
+            <p>
+                For Linear Regression, there is a "Magic Formula" that calculates the perfect weights instantly, without any guessing. This is the <strong>Normal Equation</strong>.
+            </p>
+            <div style="text-align: center; margin: 2rem 0; font-size: 1.5rem; color: #a78bfa;">
+                $\theta = (X^T X)^{-1} X^T y$
+            </div>
+            <ul>
+                <li><span style="color:var(--success-color)"><strong>Pros:</strong></span> Finds the exact optimal solution instantly. No "learning rate" needed.</li>
+                <li><span style="color:#f43f5e"><strong>Cons:</strong></span> Requires inverting a matrix ($X^T X$). If you have 1,000,000 features, this is computationally impossible (slow).</li>
+            </ul>
+            
+            <div style="background: rgba(244, 63, 94, 0.1); border-left: 4px solid #f43f5e; padding: 1rem; margin-top: 1rem;">
+                <strong>Why isn't OLS used everywhere?</strong><br>
+                The Normal Equation is $O(n^3)$. If you double your features, the calculation time increases by <strong>8x</strong>. <br>
+                For small datasets (e.g., 100 features), OLS is great. For modern "Big Data" (100,000+ features or Neural Networks), OLS crashes computers. That is why we need Gradient Descent.
+            </div>
+        </section>
+
+        <!-- Method B: Gradient Descent -->
+        <section style="margin-left: 1.5rem; border-left: 2px solid #334155; padding-left: 1.5rem; margin-top: 2rem;">
+            <h3>Method B: Gradient Descent (The Iterative "Walk")</h3>
+            <p>
+                <a href="gradient_descent_explainer.html" style="color: var(--primary-color); font-weight: bold; text-decoration: none;">
+                    👉 Click here for a Step-by-Step "Mountain Analogy" Explanation
+                </a>
+            </p>
+            <p>
+                When we can't solve the formula directly (most ML/Deep Learning models), we use an iterative approach.
+            </p>
+            <div class="highlight-box">
+                <strong>Analogy:</strong> You are blindfolded on a mountain. You feel the ground to see which way is "down" and take a small step. You repeat this until you reach the bottom.
+            </div>
+
+            <div class="demo-section">
+                <h3>Visualizing Gradient Descent</h3>
+                <p style="font-size: 0.9rem;">The curve is the Cost Function (Error). The Ball is our Model.</p>
+                <canvas id="gdCanvas" width="600" height="300"></canvas>
+                
+                <div class="controls">
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <label style="font-size:0.9rem; color:#94a3b8;">Learning Rate ($\alpha$)</label>
+                        <input type="range" id="lrSlider" min="0.01" max="1.2" step="0.01" value="0.1" style="width:150px">
+                        <span id="lrDisplay" class="stat-display">0.10</span>
+                    </div>
+                    <button onclick="gdApp.step()" class="primary">Take 1 Step</button>
+                    <button onclick="gdApp.reset()">Reset</button>
+                </div>
+                <p id="gd-status" style="margin-top:1rem; color: var(--text-muted);">Current Slope: <span id="slopeVal">--</span></p>
+            </div>
+
+            <h3>Key Concepts:</h3>
+            <ul>
+                <li><strong>Gradients:</strong> The "slope" of the hill. It points Up, so we go the opposite direction.</li>
+                <li><strong>Learning Rate ($\alpha$):</strong> Size of the step.
+                    <ul>
+                        <li>Too small: Takes forever.</li>
+                        <li>Too big: Overshoots the bottom and might diverge.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Variants of Gradient Descent:</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                <a href="gradient_descent_variants.html#batch" style="text-decoration: none; color: inherit;">
+                    <div style="border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; transition: transform 0.2s, background 0.2s;" onmouseover="this.style.background='rgba(96, 165, 250, 0.1)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='transparent'; this.style.transform='translateY(0)'">
+                        <strong style="color: #60a5fa;">Batch GD</strong><br>
+                        Uses ALL data points to calculate 1 step.<br>
+                        <em>Slow, but stable.</em>
+                    </div>
+                </a>
+                
+                <a href="gradient_descent_variants.html#sgd" style="text-decoration: none; color: inherit;">
+                    <div style="border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; transition: transform 0.2s, background 0.2s;" onmouseover="this.style.background='rgba(52, 211, 153, 0.1)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='transparent'; this.style.transform='translateY(0)'">
+                        <strong style="color: #34d399;">Stochastic GD (SGD)</strong><br>
+                        Uses ONE random data point for 1 step.<br>
+                        <em>Fast, but noisy (bounces around).</em>
+                    </div>
+                </a>
+
+                <a href="gradient_descent_variants.html#mini" style="text-decoration: none; color: inherit;">
+                    <div style="border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; transition: transform 0.2s, background 0.2s;" onmouseover="this.style.background='rgba(244, 114, 182, 0.1)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='transparent'; this.style.transform='translateY(0)'">
+                        <strong style="color: #f472b6;">Mini-Batch GD</strong><br>
+                        Uses a small batch (e.g., 32) for 1 step.<br>
+                        <em>Best of both worlds. Standard in Deep Learning.</em>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 3. The Shape (Convexity) -->
+        <section>
+            <h2>3. The Shape of the Cost Function ( Convexity )</h2>
+            <p>
+                If we have a model with <strong>2 parameters</strong> (e.g., Slope $m$ and Intercept $b$), the Cost Function becomes a 3D Surface (a Bowl).
+            </p>
+            
+            <div class="demo-section">
+                <h3>3D Cost Surface ( Convex Bowl )</h3>
+                <p style="font-size: 0.9rem;">
+                    <strong>X & Z Axes:</strong> Parameters <strong>( $\theta_0, \theta_1$ )</strong> | <strong>Vertical Y Axis:</strong> Error <strong>( $J$ )</strong>
+                </p>
+                <canvas id="convexCanvas" width="600" height="400"></canvas>
+                <div class="controls">
+                    <label style="color: #94a3b8; cursor: pointer;">
+                        <input type="checkbox" id="autoRotateCheck" checked> Auto-Rotate
+                    </label>
+                </div>
+            </div>
+
+            <p>
+                <strong>What about more parameters?</strong><br>
+                If we have 100 features, the graph becomes a <strong>Hyper-Paraboloid</strong> (101 dimensions). We can't draw it, but the math tells us it keeps this same "Bowl" shape.
+            </p>
+
+            <div class="highlight-box" style="border-left-color: #34d399; background: rgba(52, 211, 153, 0.05);">
+                <strong>Critical Takeaway: Convexity</strong>
+                <p style="margin-bottom: 0;">
+                    Because Linear Regression's cost function is always a "Bowl" (Convex), there is <strong>only one</strong> lowest point (Global Minimum). Gradient Descent is guaranteed to find it!
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Simple Gradient Descent Visualization on a Parabola y = x^2
+        const gdApp = {
+            canvas: document.getElementById('gdCanvas'),
+            ctx: document.getElementById('gdCanvas').getContext('2d'),
+            x: -2.5, // Starting parameter value
+            history: [],
+            
+            // Cost Function: J(x) = x^2
+            // Derivative: J'(x) = 2x
+            
+            draw: function() {
+                const w = this.canvas.width;
+                const h = this.canvas.height;
+                const ctx = this.ctx;
+                
+                // Clear
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0,0,w,h);
+                
+                // Coord System: Origin at center bottom
+                const scaleX = w / 6; // -3 to +3 range
+                const scaleY = h / 10;
+                const originX = w / 2;
+                const originY = h - 20;
+
+                // Draw Parabola
+                ctx.strokeStyle = '#60a5fa';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                for(let i = -3; i <= 3; i+=0.1) {
+                    const px = originX + i * scaleX;
+                    const py = originY - (i*i) * scaleY;
+                    if(i === -3) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.stroke();
+
+                // Draw History
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                ctx.beginPath();
+                this.history.forEach((pos, idx) => {
+                    const px = originX + pos * scaleX;
+                    const py = originY - (pos*pos) * scaleY;
+                    if(idx===0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                    
+                    // Draw historical dots
+                    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+                    ctx.beginPath(); ctx.arc(px, py, 3, 0, Math.PI*2); ctx.fill();
+                });
+                ctx.stroke();
+
+                // Draw Current Ball
+                const curX = originX + this.x * scaleX;
+                const curY = originY - (this.x*this.x) * scaleY;
+                
+                ctx.fillStyle = '#f43f5e';
+                ctx.beginPath();
+                ctx.arc(curX, curY, 8, 0, Math.PI*2);
+                ctx.fill();
+                
+                // Draw Tangent Line (Slope)
+                const slope = 2 * this.x;
+                const tangLen = 40;
+                // Normalize vector (1, slope)
+                const mag = Math.sqrt(1 + slope*slope);
+                const dx = (1/mag) * tangLen;
+                const dy = (slope/mag) * tangLen; // Y is inverted in canvas, but slope logic implies dy
+                
+                ctx.strokeStyle = '#34d399';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                // Canvas Y is inverted: y_canvas = originY - y_math
+                // So positive slope goes UP-Right (less Y).
+                // Let's just project point +/- dx
+                // Pt 1: x + 0.5, y + 0.5*slope
+                const x1 = this.x - 0.5; const y1 = x1*x1; // Approx tangent visual logic
+                // Actually easier: just draw line from center - vec to center + vec
+                // Canvas coords difference:
+                // slope m means for 1 unit right, m units UP (negative canvas Y)
+                
+                ctx.moveTo(curX - dx*scaleX/2, curY + dy*scaleY/2); // Very rough visual approx
+                ctx.lineTo(curX + dx*scaleX/2, curY - dy*scaleY/2);
+                ctx.stroke();
+                
+                document.getElementById('slopeVal').innerText = slope.toFixed(3);
+                if(Math.abs(this.x) < 0.05) {
+                    document.getElementById('slopeVal').innerHTML += " <strong style='color:#34d399'>(Converged!)</strong>";
+                }
+            },
+
+            step: function() {
+                const lr = parseFloat(document.getElementById('lrSlider').value);
+                const gradient = 2 * this.x;
+                this.history.push(this.x);
+                this.x = this.x - lr * gradient;
+                this.draw();
+            },
+
+            reset: function() {
+                this.x = -2.5;
+                this.history = [];
+                this.draw();
+            }
+        };
+
+        // Slider Listener
+        document.getElementById('lrSlider').addEventListener('input', (e) => {
+            document.getElementById('lrDisplay').innerText = parseFloat(e.target.value).toFixed(2);
+        });
+
+        // Init
+        gdApp.draw();
+
+        // --- 3D Convexity Visualizer ---
+        const convexApp = {
+            canvas: document.getElementById('convexCanvas'),
+            ctx: document.getElementById('convexCanvas').getContext('2d'),
+            angle: 0,
+            
+            draw: function() {
+                const w = this.canvas.width;
+                const h = this.canvas.height;
+                const ctx = this.ctx;
+                
+                ctx.clearRect(0, 0, w, h);
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0,0,w,h);
+
+                // Grid params
+                const size = 20; // Number of lines
+                const range = 2; // -2 to 2
+                
+                // Camera
+                const fov = 300;
+                const viewDist = 4;
+                
+                const points = [];
+
+                // Generate Grid Points
+                for(let i = 0; i <= size; i++) {
+                    for(let j = 0; j <= size; j++) {
+                        // Map grid to -range..range
+                        const x = (i / size) * 2 * range - range;
+                        const z = (j / size) * 2 * range - range;
+                        // Cost Function: y = x^2 + z^2
+                        // (We map Cost to Y-up for visual)
+                        const y = (x*x + z*z) * 0.5; // Scale height down a bit
+                        
+                        points.push({x, y, z, r: i, c: j}); // r,c for connectivity
+                    }
+                }
+
+                // Rotation Matrix (Rotate around Y axis)
+                const sinA = Math.sin(this.angle);
+                const cosA = Math.cos(this.angle);
+                
+                // Project and Draw
+                ctx.strokeStyle = '#34d399';
+                ctx.lineWidth = 1;
+                
+                const projected = points.map(p => {
+                    // Rotate X/Z
+                    const rx = p.x * cosA - p.z * sinA;
+                    const rz = p.x * sinA + p.z * cosA;
+                    const ry = p.y; // Keep height
+                    
+                    // Tilt camera down a bit (Rotate around X)
+                    // new y = y*cos(t) - z*sin(t)
+                    // new z = y*sin(t) + z*cos(t)
+                    const tilt = 0.4;
+                    const ry2 = ry * Math.cos(tilt) - rz * Math.sin(tilt);
+                    const rz2 = ry * Math.sin(tilt) + rz * Math.cos(tilt);
+                    
+                    // Project
+                    const scale = fov / (viewDist + rz2);
+                    const screenX = w/2 + rx * scale * 100;
+                    const screenY = h/2 + 50 - ry2 * scale * 100; // Shift down slightly
+                    
+                    return { x: screenX, y: screenY, r: p.r, c: p.c };
+                });
+
+                // Draw Mesh Lines
+                ctx.beginPath();
+                for(let i=0; i<projected.length; i++) {
+                    const p = projected[i];
+                    
+                    // Connect right
+                    if(p.c < size) {
+                        const right = projected[i+1];
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(right.x, right.y);
+                    }
+                    // Connect down
+                    if(p.r < size) {
+                        const down = projected[i + size + 1];
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(down.x, down.y);
+                    }
+                }
+                ctx.stroke();
+
+                // Draw Minimum Dot
+                // Origin (0,0,0) is center of array roughly?
+                // Actually min is at true (0,0,0)
+                // Let's project (0,0,0) specifically
+                const centerP = {x:0, y:0, z:0};
+                const rx = centerP.x * cosA - centerP.z * sinA;
+                const rz = centerP.x * sinA + centerP.z * cosA;
+                const ry = centerP.y;
+                const tilt = 0.4;
+                const ry2 = ry * Math.cos(tilt) - rz * Math.sin(tilt);
+                const rz2 = ry * Math.sin(tilt) + rz * Math.cos(tilt);
+                const scale = fov / (viewDist + rz2);
+                const cx = w/2 + rx * scale * 100;
+                const cy = h/2 + 50 - ry2 * scale * 100;
+
+                ctx.fillStyle = '#f43f5e';
+                ctx.beginPath();
+                ctx.arc(cx, cy, 6, 0, Math.PI*2);
+                ctx.fill();
+            },
+            
+            animate: function() {
+                if(document.getElementById('autoRotateCheck').checked) {
+                    this.angle += 0.01;
+                    this.draw();
+                }
+                requestAnimationFrame(() => this.animate());
+            }
+        };
+
+        convexApp.animate();
+
+    </script>
+</body>
+</html>

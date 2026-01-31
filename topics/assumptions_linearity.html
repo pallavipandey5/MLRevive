@@ -155,9 +155,31 @@
             Linear Regression isn't just about drawing a line. For the model to be statistically valid and trustworthy, the data must follow a set of "Rules" (Assumptions). If these are broken, your predictions or p-values might be garbage.
         </p>
 
-        <!-- 1. Homoscedasticity -->
+        <!-- 1. Linear Relationship -->
         <section>
-            <h2>1. Homoscedasticity (Equal Variance)</h2>
+            <h2>1. Linear Relationship</h2>
+            <p>
+                <strong>The Rule:</strong> The relationship between the independent variable (X) and the dependent variable (Y) must be linear. Ideally, the data points should arrange themselves in a straight line shape.
+                <br>
+                <strong>The Violation:</strong> The data shows a curve (parabola, exponential, etc.). If you fit a straight line to curved data, your predictions will be systematically wrong.
+            </p>
+        </section>
+
+        <!-- 2. No Autocorrelation -->
+        <section>
+            <h2>2. No Autocorrelation of Error</h2>
+            <p>
+                <strong>The Rule:</strong> The errors (residuals) should be independent of each other. Knowing one error shouldn't help you predict the next one.
+                <br>
+                <strong>The Violation:</strong> Common in time-series data. If yesterday's error was positive, and today's is also likely positive, you have autocorrelation.
+                <br>
+                <strong>Check:</strong> Use the <strong>Durbin-Watson Test</strong> (Values 1.5 - 2.5 are generally normal).
+            </p>
+        </section>
+
+        <!-- 3. Homoscedasticity -->
+        <section>
+            <h2>3. Homoscedasticity (Equal Variance)</h2>
             <p>
                 <strong>The Rule:</strong> The error (noise) should be consistent across all values of X. <br>
                 <strong>The Violation (Heteroscedasticity):</strong> The error spreads out like a funnel (e.g., predicting house prices becomes harder/noisier for expensive houses).
@@ -197,11 +219,11 @@
             </div>
         </section>
 
-        <!-- 2. Normality of Residuals -->
+        <!-- 4. Normality of Residuals -->
         <section>
-            <h2>2. Normality of Residuals</h2>
+            <h2>4. Normality of Residuals</h2>
             <p>
-                <strong>The Rule:</strong> The errors (residuals) should follow a Normal (Bell Curve) distribution. centered at zero.
+                <strong>The Rule:</strong> The errors (residuals) should follow a Normal (Bell Curve) distribution. centered at zero. This means most of the error values should be close to zero, with fewer and fewer errors as we move further away from the mean.
             </p>
 
             <div class="demo-section">
@@ -232,9 +254,9 @@
             </div>
         </section>
 
-        <!-- 3. Multicollinearity -->
+        <!-- 5. Multicollinearity -->
         <section>
-            <h2>3. Multicollinearity</h2>
+            <h2>5. Multicollinearity</h2>
             <p>
                 <strong>The Rule:</strong> Independent variables ($x_1, x_2$) should NOT be too correlated with each other.
                 If they are, the model gets confused about which variable is actually contributing to the prediction.
@@ -244,6 +266,21 @@
                 <br>• VIF = 1: No correlation (Perfect).
                 <br>• VIF > 5-10: High multicollinearity (Problematic).
             </p>
+
+            <div class="explanation" style="background: rgba(167, 139, 250, 0.1); border-left: 4px solid #a78bfa;">
+                <h4>The Math: How is VIF calculated?</h4>
+                <p>For each independent variable ($X_i$), we calculate its VIF using this formula:</p>
+                <div style="text-align: center; font-size: 1.5rem; margin: 1rem 0; color: #a78bfa;">
+                    $VIF_i = \frac{1}{1 - R_i^2}$
+                </div>
+                <p style="font-size: 1rem;">
+                    Where $R_i^2$ is the <strong>Coefficient of Determination</strong> obtained by regressing $X_i$ against <em>all other</em> independent variables.
+                </p>
+                <ul style="font-size: 0.95rem; color: var(--text-muted);">
+                    <li>If $X_i$ is highly predictable using other $X$'s, $R_i^2$ will be close to 1.</li>
+                    <li>As $R_i^2 \to 1$, the denominator $(1 - R_i^2) \to 0$, causing the VIF to "explode" to a very high value.</li>
+                </ul>
+            </div>
         </section>
     </div>
 

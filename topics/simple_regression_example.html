@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example: Salary vs. Experience - ML Encyclopedia</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .content-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        h1, h2, h3 {
+            color: var(--text-color);
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            color: var(--text-color);
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .highlight-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <a href="regression.html" class="back-link">← Back to Regression Models</a>
+        
+        <h1>Example: Predicting Salary based on Experience</h1>
+        
+        <div class="highlight-box">
+            <h3>Problem Statement</h3>
+            <p>
+                A company wants to predict the salary of a new employee based on their years of experience. We have data from 5 current employees. We will use <strong>Simple Linear Regression</strong> to find the best-fitting line: $y = mx + b$.
+            </p>
+        </div>
+
+        <h2>1. The Data</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Years of Experience ($x$)</th>
+                    <th>Salary in $1000s ($y$)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>A</td><td>1</td><td>30</td></tr>
+                <tr><td>B</td><td>2</td><td>35</td></tr>
+                <tr><td>C</td><td>3</td><td>50</td></tr>
+                <tr><td>D</td><td>4</td><td>60</td></tr>
+                <tr><td>E</td><td>5</td><td>75</td></tr>
+            </tbody>
+        </table>
+
+        <h2>2. Calculating the Model</h2>
+        <p>
+            We need to find the slope ($m$) and y-intercept ($b$) that minimizes the error.
+        </p>
+        <p>
+            The formula for slope $m$ is:
+            $$ m = \frac{n(\sum xy) - (\sum x)(\sum y)}{n(\sum x^2) - (\sum x)^2} $$
+        </p>
+
+        <h3>Step-by-Step Calculation:</h3>
+        <ul>
+            <li>$n = 5$ (number of data points)</li>
+            <li>$\\sum x = 1 + 2 + 3 + 4 + 5 = 15$</li>
+            <li>$\\sum y = 30 + 35 + 50 + 60 + 75 = 250$</li>
+            <li>$\\sum xy = (1\cdot30) + (2\cdot35) + (3\cdot50) + (4\cdot60) + (5\cdot75) = 30 + 70 + 150 + 240 + 375 = 865$</li>
+            <li>$\\sum x^2 = 1^2 + 2^2 + 3^2 + 4^2 + 5^2 = 1 + 4 + 9 + 16 + 25 = 55$</li>
+        </ul>
+
+        <p>
+            Plugging these into the formula for $m$:
+            $$ m = \frac{5(865) - (15)(250)}{5(55) - (15)^2} $$
+            $$ m = \frac{4325 - 3750}{275 - 225} = \frac{575}{50} = 11.5 $$
+        </p>
+
+        <p>
+            Now finding the intercept $b$ using $b = \bar{y} - m\bar{x}$:
+            $$ \bar{y} = 250 / 5 = 50 $$
+            $$ \bar{x} = 15 / 5 = 3 $$
+            $$ b = 50 - 11.5(3) = 50 - 34.5 = 15.5 $$
+        </p>
+
+        <div class="highlight-box">
+            <h3>Final Equation</h3>
+            <p style="font-size: 1.5rem; color: var(--text-color); font-weight: bold;">
+                Salary = 11.5(Experience) + 15.5
+            </p>
+            <p>
+                This means for every extra year of experience, the salary increases by $11,500, starting from a base of $15,500.
+            </p>
+        </div>
+
+        <h2>3. Making a Prediction</h2>
+        <p>
+            If we hire someone with <strong>6 years</strong> of experience:
+            $$ y = 11.5(6) + 15.5 $$
+            $$ y = 69 + 15.5 = 84.5 $$
+        </p>
+        <p>
+            We would predict a salary of <strong>$84,500</strong>.
+        </p>
+
+    </div>
+</body>
+</html>

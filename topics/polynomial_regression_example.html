@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example: Trajectory of a Ball - ML Encyclopedia</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .content-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        h1, h2, h3 {
+            color: var(--text-color);
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            color: var(--text-color);
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .highlight-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+        
+        .code-block {
+            background: #0f172a;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            color: #a5b4fc;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <a href="regression.html" class="back-link">← Back to Regression Models</a>
+        
+        <h1>Example: Trajectory of a Ball</h1>
+        
+        <div class="highlight-box">
+            <h3>Problem Statement</h3>
+            <p>
+                We throw a ball into the air and measure its height at different times. We want to predict where the ball will be at 1.5 seconds.
+            </p>
+            <p>
+                Because gravity pulls the ball down, the path is an <strong>arc</strong> (parabola), not a straight line. Therefore, Simple Linear Regression will fail here. We need <strong>Polynomial Regression (Degree 2)</strong>.
+            </p>
+        </div>
+
+        <h2>1. The Data</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Time in Seconds ($x$)</th>
+                    <th>Height in Meters ($y$)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>0</td><td>2</td></tr>
+                <tr><td>1</td><td>12</td></tr>
+                <tr><td>2</td><td>12</td></tr>
+                <tr><td>3</td><td>2</td></tr>
+            </tbody>
+        </table>
+
+        <h2>2. Choosing the Model</h2>
+        <p>
+            A straight line equation looks like $y = mx + b$.
+            A polynomial (degree 2) equation looks like:
+        </p>
+        <div class="code-block">
+            y = w₀ + w₁x + w₂x²
+        </div>
+        <p>
+            Here, $w_0$, $w_1$, and $w_2$ are the weights we need to find.
+        </p>
+
+        <h2>3. Fitting the Curve</h2>
+        <p>
+            The computer (or a complex manual calculation using matrices) solves for the weights that minimize the error. For this perfect physics example, the result is:
+        </p>
+        <ul>
+            <li>$w_2 = -5$ (Gravity's effect)</li>
+            <li>$w_1 = 15$ (Initial upward velocity)</li>
+            <li>$w_0 = 2$ (Starting height)</li>
+        </ul>
+
+        <div class="highlight-box">
+            <h3>Final Equation</h3>
+            <p style="font-size: 1.5rem; color: var(--text-color); font-weight: bold;">
+                Height = -5(Time)² + 15(Time) + 2
+            </p>
+        </div>
+
+        <h2>4. Making a Prediction</h2>
+        <p>
+            Let's predict the height at <strong>1.5 seconds</strong> (exactly halfway between measurements):
+        </p>
+        <p>
+            $$ y = -5(1.5)^2 + 15(1.5) + 2 $$
+            $$ y = -5(2.25) + 22.5 + 2 $$
+            $$ y = -11.25 + 24.5 $$
+            $$ y = 13.25 	ext{ meters} $$
+        </p>
+        <p>
+            The model correctly predicts that the ball peaks between 1 and 2 seconds, reaching higher than the measured points of 12m. A straight line model would have predicted it was just staying flat or going in one direction!
+        </p>
+
+    </div>
+</body>
+</html>

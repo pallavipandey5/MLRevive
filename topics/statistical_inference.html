@@ -288,6 +288,64 @@
                 </div>
             </div>
         </section>
+
+        <!-- 3. Common Hypothesis Tests -->
+        <section>
+            <h2>3. Common Hypothesis Tests</h2>
+            <p>
+                While the P-Value is the universal "score," we calculate it using different tests depending on the type of data we have.
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                
+                <!-- T-Test -->
+                <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <h3 style="color: #60a5fa; margin-top: 0;">T-Test (Student's t-test)</h3>
+                    <p style="font-size: 0.95rem;"><strong>Use when:</strong> Comparing the <em>averages (means)</em> of <strong>two</strong> groups.</p>
+                    <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <strong style="color: var(--success-color);">Example:</strong><br>
+                        Does the new website design lead to longer visit times than the old one?<br>
+                        <ul style="margin: 0.5rem 0 0 1.2rem; color: var(--text-muted);">
+                            <li>Group A: Old Design (Avg: 45s)</li>
+                            <li>Group B: New Design (Avg: 52s)</li>
+                        </ul>
+                        <br>
+                        <em>Result: P = 0.04 (Significant difference!)</em>
+                    </div>
+                </div>
+
+                <!-- ANOVA -->
+                <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <h3 style="color: #a78bfa; margin-top: 0;">ANOVA (Analysis of Variance)</h3>
+                    <p style="font-size: 0.95rem;"><strong>Use when:</strong> Comparing the averages of <strong>three or more</strong> groups.</p>
+                    <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <strong style="color: var(--success-color);">Example:</strong><br>
+                        Comparing the effectiveness of three different diets.<br>
+                        <ul style="margin: 0.5rem 0 0 1.2rem; color: var(--text-muted);">
+                            <li>Diet A vs. Diet B vs. Diet C</li>
+                        </ul>
+                        <br>
+                        <em>Result: F-Statistic checks if at least one differs from the others.</em>
+                    </div>
+                </div>
+
+                <!-- Chi-Square -->
+                <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <h3 style="color: #f472b6; margin-top: 0;">Chi-Square ($\chi^2$) Test</h3>
+                    <p style="font-size: 0.95rem;"><strong>Use when:</strong> Comparing <strong>categories / counts</strong> (not averages).</p>
+                    <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <strong style="color: var(--success-color);">Example:</strong><br>
+                        Is ice cream flavor preference related to age group?<br>
+                        <ul style="margin: 0.5rem 0 0 1.2rem; color: var(--text-muted);">
+                            <li>Count of Chocolate vs. Vanilla fans in Kids vs. Adults.</li>
+                        </ul>
+                        <br>
+                        <em>Result: Tests if the distribution of preferences matches expectations.</em>
+                    </div>
+                </div>
+
+            </div>
+        </section>
     </div>
 
     <script>

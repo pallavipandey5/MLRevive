@@ -210,6 +210,11 @@
             <p>
                 <strong>Simple Linear Regression</strong> models the relationship between a single independent variable (Input, $x$) and a dependent variable (Output, $y$) using a straight line.
             </p>
+            <p>
+                <a href="simple_regression_example.html" target="_blank" style="color: var(--primary-color); font-weight: bold; text-decoration: none;">
+                    📄 View Example: Predicting Salary based on Experience (Opens in new tab)
+                </a>
+            </p>
             <div class="interactive-demo">
                 <h3>Linear Engine (Degree 1)</h3>
                 <p style="font-size: 0.9rem; margin-bottom: 1rem;">Click to add points.</p>
@@ -233,6 +238,11 @@
             <h2>2. Polynomial Regression</h2>
             <p>
                 What if the data isn't straight? <strong>Polynomial Regression</strong> fits a curve by adding powers of $x$ ($x^2, x^3...$).
+            </p>
+            <p>
+                <a href="polynomial_regression_example.html" target="_blank" style="color: var(--primary-color); font-weight: bold; text-decoration: none;">
+                    📄 View Example: Trajectory of a Ball (Opens in new tab)
+                </a>
             </p>
             <p>
                 This is still "Linear Regression" technically, because it is linear in the <em>parameters</em> (coefficients), even though it produces a curved line.
@@ -293,6 +303,69 @@
                         In Multiple Regression, we fit a <strong>Hyperplane</strong>.
                         We cannot visualize this easily on a 2D screen, but the math (minimizing squared errors) remains exactly the same.
                     </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Categorical Data -->
+        <section id="dummy-variables">
+            <h2>4. Handling Categorical Data (Dummy Variables)</h2>
+            <p>
+                Linear Regression performs math on numbers. But real data often contains text or categories like "City", "Color", or "Yes/No".
+                To use these in our model, we must translate them into numbers using <strong>Dummy Variables</strong>.
+            </p>
+
+            <div style="background: rgba(167, 139, 250, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid #a78bfa; margin-top: 1.5rem;">
+                <h3 style="color: #a78bfa; margin-top: 0;">The Technique: One-Hot Encoding</h3>
+                <p style="color: var(--text-muted);">
+                    Instead of assigning random numbers (Red=1, Blue=2, Green=3) which would confuse the model into thinking Green > Blue, we create separate "Switch" columns for each category.
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem;">
+                    <div>
+                        <h4 style="text-align: center; color: #f43f5e; margin-bottom: 0.5rem;">❌ Bad Approach (Label Encoding)</h4>
+                        <table style="width: 100%; border-collapse: collapse; font-family: monospace; font-size: 0.9rem;">
+                            <tr style="border-bottom: 1px solid #475569;">
+                                <th style="text-align: left; padding: 5px;">Color</th>
+                                <th style="text-align: left; padding: 5px;">Value</th>
+                            </tr>
+                            <tr><td style="padding: 5px;">Red</td><td style="padding: 5px;">1</td></tr>
+                            <tr><td style="padding: 5px;">Blue</td><td style="padding: 5px;">2</td></tr>
+                            <tr><td style="padding: 5px;">Green</td><td style="padding: 5px;">3</td></tr>
+                        </table>
+                        <p style="font-size: 0.8rem; color: #f43f5e; margin-top: 0.5rem;">
+                            <em>Error:</em> Model assumes Green is "3x more" than Red.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 style="text-align: center; color: #34d399; margin-bottom: 0.5rem;">✅ Good Approach (Dummy Vars)</h4>
+                        <table style="width: 100%; border-collapse: collapse; font-family: monospace; font-size: 0.9rem;">
+                            <tr style="border-bottom: 1px solid #475569;">
+                                <th style="text-align: left; padding: 5px;">Is_Red</th>
+                                <th style="text-align: left; padding: 5px;">Is_Blue</th>
+                                <th style="text-align: left; padding: 5px;">Is_Green</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px;">1</td><td style="padding: 5px;">0</td><td style="padding: 5px;">0</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px;">0</td><td style="padding: 5px;">1</td><td style="padding: 5px;">0</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px;">0</td><td style="padding: 5px;">0</td><td style="padding: 5px;">1</td>
+                            </tr>
+                        </table>
+                        <p style="font-size: 0.8rem; color: #34d399; margin-top: 0.5rem;">
+                            <em>Result:</em> Each category is treated independently.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="explanation" style="margin-top: 1.5rem; background: rgba(0,0,0,0.2); border-left: 4px solid #a78bfa;">
+                    <strong>Note on the "Dummy Variable Trap":</strong>
+                    <br>
+                    Technically, if you have 3 categories, you only need <strong>2</strong> dummy variables (e.g., if it's not Red and not Blue, it <em>must</em> be Green). Including all 3 can cause Multicollinearity (Perfect Correlation).
                 </div>
             </div>
         </section>

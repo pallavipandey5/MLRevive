@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Descent Variants - ML Encyclopedia</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .content-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        h1 { color: var(--text-color); margin-bottom: 1rem; }
+        h2 { color: var(--text-color); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 3rem; }
+        h3 { color: #a78bfa; margin-top: 1.5rem; }
+        
+        p, li { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; }
+
+        .variant-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .math-block {
+            background: #0f172a;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 1.5rem 0;
+            border: 1px solid #334155;
+            overflow-x: auto;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            text-align: left;
+        }
+        .comparison-table th { background: rgba(255,255,255,0.05); color: var(--text-color); }
+        
+        .tag {
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .tag-slow { background: rgba(244, 63, 94, 0.2); color: #f43f5e; }
+        .tag-fast { background: rgba(52, 211, 153, 0.2); color: #34d399; }
+        .tag-stable { background: rgba(96, 165, 250, 0.2); color: #60a5fa; }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <a href="parameter_optimization.html" class="back-link">← Back to Parameter Optimization</a>
+        
+        <h1>Variants of Gradient Descent</h1>
+        <p>
+            The standard Gradient Descent algorithm works, but how much data should we use to calculate the slope? This choice creates three distinct "flavors" of the algorithm, each with its own mathematical properties and trade-offs.
+        </p>
+
+        <!-- Batch GD -->
+        <section id="batch">
+            <div class="variant-box" style="border-left: 4px solid #60a5fa;">
+                <h2>1. Batch Gradient Descent</h2>
+                <p>
+                    <strong>The Logic:</strong> "I will look at EVERY single exam paper before I calculate the average score."
+                </p>
+                <p>
+                    In Batch GD, we use the <strong>entire dataset</strong> to calculate the gradient for a single step. We sum up the errors for all $n$ training examples.
+                </p>
+                
+                <h3>The Math</h3>
+                <p>The update rule sums the gradient over all $n$ samples:</p>
+                <div class="math-block">
+                    $$ \theta_{new} = \theta_{old} - \alpha \cdot \frac{1}{n} \sum_{i=1}^{n} \nabla J(\theta; x^{(i)}, y^{(i)}) $$ 
+                </div>
+
+                <h3>Pros & Cons</h3>
+                <ul>
+                    <li><span class="tag tag-stable">Stable</span> <strong>Smooth Convergence:</strong> Since it uses all data, the path to the minimum is a straight, smooth line.</li>
+                    <li><span class="tag tag-slow">Slow</span> <strong>Computationally Expensive:</strong> If you have 1 million data points, you must calculate 1 million errors just to take ONE step.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Stochastic GD -->
+        <section id="sgd">
+            <div class="variant-box" style="border-left: 4px solid #34d399;">
+                <h2>2. Stochastic Gradient Descent (SGD)</h2>
+                <p>
+                    <strong>The Logic:</strong> "I will look at ONE exam paper and immediately guess the class average."
+                </p>
+                <p>
+                    In SGD, we update the parameters after looking at just <strong>one random training example</strong>.
+                </p>
+
+                <h3>The Math</h3>
+                <p>The update rule uses only a single sample $(x^{(i)}, y^{(i)})$: </p>
+                <div class="math-block">
+                    $$ \theta_{new} = \theta_{old} - \alpha \cdot \nabla J(\theta; x^{(i)}, y^{(i)}) $$ 
+                </div>
+
+                <h3>Pros & Cons</h3>
+                <ul>
+                    <li><span class="tag tag-fast">Fast</span> <strong>Instant Updates:</strong> You learn immediately. Great for huge datasets or streaming data.</li>
+                    <li><span class="tag tag-slow">Noisy</span> <strong>Erratic Path:</strong> The gradient bounces around wildly. It might never "settle" perfectly at the minimum but will hover around it.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Mini-Batch GD -->
+        <section id="mini">
+            <div class="variant-box" style="border-left: 4px solid #f472b6;">
+                <h2>3. Mini-Batch Gradient Descent</h2>
+                <p>
+                    <strong>The Logic:</strong> "I will grab a stack of 32 exams, calculate their average, and update."
+                </p>
+                <p>
+                    This is the <strong>Goldilocks</strong> solution. We split data into small "batches" (e.g., 32, 64, or 128 samples).
+                </p>
+
+                <h3>The Math</h3>
+                <p>The update rule sums over a small batch size $k$:</p>
+                <div class="math-block">
+                    $$ \theta_{new} = \theta_{old} - \alpha \cdot \frac{1}{k} \sum_{i=1}^{k} \nabla J(\theta; x^{(i)}, y^{(i)}) $$ 
+                </div>
+
+                <h3>Pros & Cons</h3>
+                <ul>
+                    <li><span class="tag tag-stable">Balanced</span> <strong>Best of Both Worlds:</strong> More stable than SGD, much faster than Batch GD.</li>
+                    <li><strong>Vectorization:</strong> Modern GPUs (Graphics Cards) are designed to do math on matrices of size 32 or 64 instantly. This makes Mini-Batch extremely efficient for Deep Learning.</li>
+                </ul>
+            </div>
+        </section>
+
+        <h2>Summary Comparison</h2>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Data per Step</th>
+                    <th>Speed (per step)</th>
+                    <th>Stability</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="color:#60a5fa; font-weight:bold;">Batch GD</td>
+                    <td>All Data ($n$)</td>
+                    <td>Very Slow</td>
+                    <td>High (Smooth)</td>
+                </tr>
+                <tr>
+                    <td style="color:#34d399; font-weight:bold;">SGD</td>
+                    <td>1 Sample</td>
+                    <td>Instant</td>
+                    <td>Low (Noisy)</td>
+                </tr>
+                <tr>
+                    <td style="color:#f472b6; font-weight:bold;">Mini-Batch</td>
+                    <td>Batch ($k \approx 32$)</td>
+                    <td>Fast</td>
+                    <td>Medium (Good)</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</body>
+</html>

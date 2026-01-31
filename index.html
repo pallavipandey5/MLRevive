@@ -13,6 +13,11 @@
             <h2>Master Index</h2>
             <p class="subtitle">Study Progress Tracker</p>
             
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search for a topic or keyword..." aria-label="Search">
+                <div id="search-results" class="search-results hidden"></div>
+            </div>
+
             <div class="progress-container">
                 <div class="progress-labels">
                     <span>Overall Progress</span>
@@ -65,7 +70,7 @@
                             <li class="subtopic-item"><span class="subtopic-text">Probability Distributions (Discrete & Continuous)</span> <input type="checkbox" id="subtopic-3-2" class="subtopic-checkbox"></li>
                             <li class="subtopic-item">
                                 <a href="topics/statistical_inference.html" class="subtopic-link">
-                                    <span class="subtopic-text">Statistical Inference (P-Value, Confidence Intervals, Hypothesis Testing)</span>
+                                    <span class="subtopic-text">Statistical Inference ( P-Value, Confidence Intervals, Hypothesis Testing )</span>
                                 </a>
                                 <input type="checkbox" id="subtopic-3-3" class="subtopic-checkbox">
                             </li>
@@ -97,7 +102,12 @@
                                 </a>
                                 <input type="checkbox" id="subtopic-4-2" class="subtopic-checkbox">
                             </li>
-                            <li class="subtopic-item"><span class="subtopic-text">Parameter Optimization (OLS, Gradient Descent)</span> <input type="checkbox" id="subtopic-4-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item">
+                                <a href="topics/parameter_optimization.html" class="subtopic-link">
+                                    <span class="subtopic-text">Parameter Optimization ( OLS, Gradient Descent )</span>
+                                </a>
+                                <input type="checkbox" id="subtopic-4-3" class="subtopic-checkbox">
+                            </li>
                             <li class="subtopic-item"><span class="subtopic-text">Evaluation Metrics (MSE, MAE, R-Squared)</span> <input type="checkbox" id="subtopic-4-4" class="subtopic-checkbox"></li>
                             <li class="subtopic-item"><span class="subtopic-text">Advanced Regression (Polynomial, Spline)</span> <input type="checkbox" id="subtopic-4-5" class="subtopic-checkbox"></li>
                             <li class="subtopic-item"><span class="subtopic-text">Regularization (Ridge, Lasso, Elastic Net)</span> <input type="checkbox" id="subtopic-4-6" class="subtopic-checkbox"></li>
@@ -129,6 +139,18 @@
                             <li class="subtopic-item"><span class="subtopic-text">Ensemble Methods (Bagging, Random Forests, Boosting: AdaBoost, GBM, XGBoost)</span> <input type="checkbox" id="subtopic-6-3" class="subtopic-checkbox"></li>
                         </ul>
                     </li>
+                    <li class="topic-item">
+                        <div class="topic-header">
+                            <input type="checkbox" id="topic-7" class="topic-checkbox">
+                            <a href="topics/feature_selection.html" class="topic-link">7. Feature Selection</a>
+                        </div>
+                        <ul class="subtopic-list">
+                            <li class="subtopic-item"><span class="subtopic-text">Filter Methods (Correlation, Chi-Square, Mutual Information)</span> <input type="checkbox" id="subtopic-7-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Wrapper Methods (Forward/Backward Selection, RFE)</span> <input type="checkbox" id="subtopic-7-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Embedded Methods (Lasso, Tree Importance)</span> <input type="checkbox" id="subtopic-7-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Advanced (Permutation Importance, Boruta)</span> <input type="checkbox" id="subtopic-7-4" class="subtopic-checkbox"></li>
+                        </ul>
+                    </li>
                 </ul>
             </section>
 
@@ -138,25 +160,25 @@
                 <ul class="topic-list">
                     <li class="topic-item">
                         <div class="topic-header">
-                            <input type="checkbox" id="topic-7" class="topic-checkbox">
-                            <a href="topics/clustering.html" class="topic-link">7. Clustering & Association</a>
+                            <input type="checkbox" id="topic-8" class="topic-checkbox">
+                            <a href="topics/clustering.html" class="topic-link">8. Clustering & Association</a>
                         </div>
                         <ul class="subtopic-list">
-                            <li class="subtopic-item"><span class="subtopic-text">Partitioning (K-Means, K-Means++)</span> <input type="checkbox" id="subtopic-7-1" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Hyperparameter Tuning (Elbow Method, Silhouette Scores)</span> <input type="checkbox" id="subtopic-7-2" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Hierarchical Clustering</span> <input type="checkbox" id="subtopic-7-3" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Density-Based (DBSCAN, OPTICS)</span> <input type="checkbox" id="subtopic-7-4" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Association (Apriori)</span> <input type="checkbox" id="subtopic-7-5" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Partitioning (K-Means, K-Means++)</span> <input type="checkbox" id="subtopic-8-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Hyperparameter Tuning (Elbow Method, Silhouette Scores)</span> <input type="checkbox" id="subtopic-8-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Hierarchical Clustering</span> <input type="checkbox" id="subtopic-8-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Density-Based (DBSCAN, OPTICS)</span> <input type="checkbox" id="subtopic-8-4" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Association (Apriori)</span> <input type="checkbox" id="subtopic-8-5" class="subtopic-checkbox"></li>
                         </ul>
                     </li>
                     <li class="topic-item">
                         <div class="topic-header">
-                            <input type="checkbox" id="topic-8" class="topic-checkbox">
-                            <a href="topics/dimensionality_reduction.html" class="topic-link">8. Dimensionality Reduction</a>
+                            <input type="checkbox" id="topic-9" class="topic-checkbox">
+                            <a href="topics/dimensionality_reduction.html" class="topic-link">9. Dimensionality Reduction</a>
                         </div>
                         <ul class="subtopic-list">
-                            <li class="subtopic-item"><span class="subtopic-text">Linear (PCA, Factor Analysis)</span> <input type="checkbox" id="subtopic-8-1" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Non-Linear (t-SNE, UMAP, Isomap, Kernel PCA)</span> <input type="checkbox" id="subtopic-8-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Linear (PCA, Factor Analysis)</span> <input type="checkbox" id="subtopic-9-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Non-Linear (t-SNE, UMAP, Isomap, Kernel PCA)</span> <input type="checkbox" id="subtopic-9-2" class="subtopic-checkbox"></li>
                         </ul>
                     </li>
                 </ul>
@@ -168,26 +190,26 @@
                 <ul class="topic-list">
                     <li class="topic-item">
                         <div class="topic-header">
-                            <input type="checkbox" id="topic-9" class="topic-checkbox">
-                            <a href="topics/deep_learning_foundations.html" class="topic-link">9. Deep Learning Foundations</a>
+                            <input type="checkbox" id="topic-10" class="topic-checkbox">
+                            <a href="topics/deep_learning_foundations.html" class="topic-link">10. Deep Learning Foundations</a>
                         </div>
                         <ul class="subtopic-list">
-                            <li class="subtopic-item"><span class="subtopic-text">Architecture (Perceptrons, MLP)</span> <input type="checkbox" id="subtopic-9-1" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Activation Functions (ReLU, Sigmoid, Tanh)</span> <input type="checkbox" id="subtopic-9-2" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">The Optimization Loop (Backpropagation)</span> <input type="checkbox" id="subtopic-9-3" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Neural Optimizers (Adam, RMSProp, SGD)</span> <input type="checkbox" id="subtopic-9-4" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Neural Regularization (Dropout, Batch Norm)</span> <input type="checkbox" id="subtopic-9-5" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Architecture (Perceptrons, MLP)</span> <input type="checkbox" id="subtopic-10-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Activation Functions (ReLU, Sigmoid, Tanh)</span> <input type="checkbox" id="subtopic-10-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">The Optimization Loop (Backpropagation)</span> <input type="checkbox" id="subtopic-10-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Neural Optimizers (Adam, RMSProp, SGD)</span> <input type="checkbox" id="subtopic-10-4" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Neural Regularization (Dropout, Batch Norm)</span> <input type="checkbox" id="subtopic-10-5" class="subtopic-checkbox"></li>
                         </ul>
                     </li>
                     <li class="topic-item">
                         <div class="topic-header">
-                            <input type="checkbox" id="topic-10" class="topic-checkbox">
-                            <a href="topics/specialized_architectures.html" class="topic-link">10. Specialized Architectures</a>
+                            <input type="checkbox" id="topic-11" class="topic-checkbox">
+                            <a href="topics/specialized_architectures.html" class="topic-link">11. Specialized Architectures</a>
                         </div>
                         <ul class="subtopic-list">
-                            <li class="subtopic-item"><span class="subtopic-text">Computer Vision (CNNs)</span> <input type="checkbox" id="subtopic-10-1" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Sequence Models (RNNs, LSTMs, GRUs)</span> <input type="checkbox" id="subtopic-10-2" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">The Transformer (Self-Attention)</span> <input type="checkbox" id="subtopic-10-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Computer Vision (CNNs)</span> <input type="checkbox" id="subtopic-11-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Sequence Models (RNNs, LSTMs, GRUs)</span> <input type="checkbox" id="subtopic-11-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">The Transformer (Self-Attention)</span> <input type="checkbox" id="subtopic-11-3" class="subtopic-checkbox"></li>
                         </ul>
                     </li>
                 </ul>
@@ -199,24 +221,24 @@
                 <ul class="topic-list">
                     <li class="topic-item">
                         <div class="topic-header">
-                            <input type="checkbox" id="topic-11" class="topic-checkbox">
-                            <a href="topics/generative_ai.html" class="topic-link">11. Generative AI & LLMs</a>
+                            <input type="checkbox" id="topic-12" class="topic-checkbox">
+                            <a href="topics/generative_ai.html" class="topic-link">12. Generative AI & LLMs</a>
                         </div>
                         <ul class="subtopic-list">
-                            <li class="subtopic-item"><span class="subtopic-text">Large Language Models (GPT, BERT, T5)</span> <input type="checkbox" id="subtopic-11-1" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Fine-Tuning (PEFT, LoRA)</span> <input type="checkbox" id="subtopic-11-2" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Generation Models (GANs, VAEs, Diffusion)</span> <input type="checkbox" id="subtopic-11-3" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">RAG (Vector Databases)</span> <input type="checkbox" id="subtopic-11-4" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Large Language Models (GPT, BERT, T5)</span> <input type="checkbox" id="subtopic-12-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Fine-Tuning (PEFT, LoRA)</span> <input type="checkbox" id="subtopic-12-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Generation Models (GANs, VAEs, Diffusion)</span> <input type="checkbox" id="subtopic-12-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">RAG (Vector Databases)</span> <input type="checkbox" id="subtopic-12-4" class="subtopic-checkbox"></li>
                         </ul>
                     </li>
                     <li class="topic-item">
                         <div class="topic-header">
-                            <input type="checkbox" id="topic-12" class="topic-checkbox">
-                            <a href="topics/reinforcement_learning.html" class="topic-link">12. Reinforcement Learning</a>
+                            <input type="checkbox" id="topic-13" class="topic-checkbox">
+                            <a href="topics/reinforcement_learning.html" class="topic-link">13. Reinforcement Learning</a>
                         </div>
                         <ul class="subtopic-list">
-                            <li class="subtopic-item"><span class="subtopic-text">Foundations (MDP, Rewards)</span> <input type="checkbox" id="subtopic-12-1" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Algorithms (Q-Learning, DQN, PPO)</span> <input type="checkbox" id="subtopic-12-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Foundations (MDP, Rewards)</span> <input type="checkbox" id="subtopic-13-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Algorithms (Q-Learning, DQN, PPO)</span> <input type="checkbox" id="subtopic-13-2" class="subtopic-checkbox"></li>
                         </ul>
                     </li>
                 </ul>
@@ -228,29 +250,30 @@
                 <ul class="topic-list">
                     <li class="topic-item">
                         <div class="topic-header">
-                            <input type="checkbox" id="topic-13" class="topic-checkbox">
-                            <a href="topics/evaluation.html" class="topic-link">13. Evaluation & Validation</a>
+                            <input type="checkbox" id="topic-14" class="topic-checkbox">
+                            <a href="topics/evaluation.html" class="topic-link">14. Evaluation & Validation</a>
                         </div>
                         <ul class="subtopic-list">
-                            <li class="subtopic-item"><span class="subtopic-text">Classification Metrics (Precision, Recall, F1, ROC-AUC)</span> <input type="checkbox" id="subtopic-13-1" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Validation (K-Fold Cross-Validation)</span> <input type="checkbox" id="subtopic-13-2" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Analysis (Bias-Variance Trade-off)</span> <input type="checkbox" id="subtopic-13-3" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Classification Metrics (Precision, Recall, F1, ROC-AUC)</span> <input type="checkbox" id="subtopic-14-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Validation (K-Fold Cross-Validation)</span> <input type="checkbox" id="subtopic-14-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Analysis (Bias-Variance Trade-off)</span> <input type="checkbox" id="subtopic-14-3" class="subtopic-checkbox"></li>
                         </ul>
                     </li>
                     <li class="topic-item">
                         <div class="topic-header">
-                            <input type="checkbox" id="topic-14" class="topic-checkbox">
-                            <a href="topics/mlops.html" class="topic-link">14. MLOps & Explainability</a>
+                            <input type="checkbox" id="topic-15" class="topic-checkbox">
+                            <a href="topics/mlops.html" class="topic-link">15. MLOps & Explainability</a>
                         </div>
                         <ul class="subtopic-list">
-                            <li class="subtopic-item"><span class="subtopic-text">XAI (SHAP, LIME)</span> <input type="checkbox" id="subtopic-14-1" class="subtopic-checkbox"></li>
-                            <li class="subtopic-item"><span class="subtopic-text">Production (Containerization, Model/Data Drift)</span> <input type="checkbox" id="subtopic-14-2" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">XAI (SHAP, LIME)</span> <input type="checkbox" id="subtopic-15-1" class="subtopic-checkbox"></li>
+                            <li class="subtopic-item"><span class="subtopic-text">Production (Containerization, Model/Data Drift)</span> <input type="checkbox" id="subtopic-15-2" class="subtopic-checkbox"></li>
                         </ul>
                     </li>
                 </ul>
             </section>
         </main>
     </div>
+    <script src="search_data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
