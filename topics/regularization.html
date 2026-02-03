@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regularization (Ridge & Lasso) - ML Encyclopedia</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .content-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        h2 { color: var(--text-color); border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-top: 2rem; }
+        h3 { color: #a78bfa; margin-top: 1.5rem; }
+        p { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; }
+
+        .formula-box {
+            background: #0f172a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.3rem;
+            margin: 1.5rem 0;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+        }
+
+        .penalty-tag {
+            color: #f472b6;
+            font-weight: bold;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .method-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <a href="../index.html" class="back-link">← Back to Master Index</a>
+        
+        <h1>Regularization: Shrinking the Weights</h1>
+        <p>
+            When a model has too many features or the weights ($\theta$) become too large, it starts to "memorize" the training data instead of "learning" it. This is <strong>Overfitting</strong>. 
+        </p>
+        <p>
+            <strong>Regularization</strong> fixes this by changing the Cost Function to punish large weights.
+        </p>
+
+        <div class="formula-box" style="background: rgba(96, 165, 250, 0.05); border-color: #60a5fa;">
+            $$ \text{New Cost} = \text{MSE} + \text{Penalty Term} $$ 
+        </div>
+
+        <section id="ridge">
+            <h2>1. Ridge Regression ( L2 Regularization )</h2>
+            <p>
+                Ridge adds a penalty equal to the <strong>square</strong> of the magnitude of coefficients.
+            </p>
+            <div class="formula-box">
+                $$ J(\theta) = \text{MSE} + \color{#f472b6}{\alpha \sum_{j=1}^{n} \theta_j^2} $$ 
+            </div>
+            <p>
+                <strong>The Logic:</strong> If a weight ($\theta$) tries to become very large, the Cost Function "explodes." To keep the Cost low, Gradient Descent is forced to keep the weights small and evenly distributed.
+            </p>
+            <ul>
+                <li><strong>Result:</strong> It reduces the impact of less important features but <strong>never</strong> makes them zero.</li>
+            </ul>
+        </section>
+
+        <section id="lasso">
+            <h2>2. Lasso Regression ( L1 Regularization )</h2>
+            <p>
+                Lasso ( Least Absolute Shrinkage and Selection Operator ) adds a penalty equal to the <strong>absolute value</strong> of the magnitude of coefficients.
+            </p>
+            <div class="formula-box">
+                $$ J(\theta) = \text{MSE} + \color{#f472b6}{\alpha \sum_{j=1}^{n} |\theta_j|} $$ 
+            </div>
+            <p>
+                <strong>The Logic:</strong> Because Lasso uses absolute values (the sharp "V" shape), it has a unique property: it can force weights to become <strong>exactly zero</strong>.
+            </p>
+            <ul>
+                <li><strong>Result:</strong> It performs <strong>Feature Selection</strong>. It effectively removes useless variables from your model.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>3. What is $\alpha$ ( Alpha )?</h2>
+            <p>
+                $\alpha$ is the <strong>Regularization Strength</strong>.
+            </p>
+            <ul>
+                <li><strong>$\alpha = 0$:</strong> Standard Linear Regression (No penalty).</li>
+                <li><strong>$\alpha = \infty$:</strong> Weights become zero (Model is too simple).</li>
+                <li><strong>Sweet Spot:</strong> Find an alpha that balances accuracy and simplicity.</li>
+            </ul>
+        </section>
+
+        <div class="comparison-grid">
+            <div class="method-card" style="border-top: 4px solid #60a5fa;">
+                <h3 style="color:#60a5fa">Use Ridge when...</h3>
+                <p>You have many features that all contribute a little bit to the result. It handles <strong>Multicollinearity</strong> (correlated features) very well.</p>
+            </div>
+            <div class="method-card" style="border-top: 4px solid #34d399;">
+                <h3 style="color:#34d399">Use Lasso when...</h3>
+                <p>You suspect only a few features are actually important. It will help you "clean" your data by ignoring the noise.</p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

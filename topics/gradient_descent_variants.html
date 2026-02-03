@@ -127,6 +127,16 @@
                 <p>
                     In SGD, we update the parameters after looking at just <strong>one random training example</strong>.
                 </p>
+                
+                <div style="background: rgba(52, 211, 153, 0.05); border-left: 3px solid #34d399; padding: 1rem; margin: 1rem 0;">
+                    <strong>The Sequential Process:</strong><br>
+                    Unlike Batch GD, SGD doesn't wait. 
+                    <ol style="margin-top: 0.5rem; font-size: 0.95rem;">
+                        <li>Pick <strong>Sample A</strong> $\to$ Calculate Error $\to$ Update $\theta$ to $\theta_{new}$.</li>
+                        <li>Pick <strong>Sample B</strong> $\to$ Use the <em>new</em> $\theta$ $\to$ Calculate Error $\to$ Update $\theta$ again.</li>
+                    </ol>
+                    This "one-by-one" iterative jumping is exactly how SGD navigates the cost landscape.
+                </div>
 
                 <h3>The Math</h3>
                 <p>The update rule uses only a single sample $(x^{(i)}, y^{(i)})$: </p>

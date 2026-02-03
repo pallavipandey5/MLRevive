@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluation Metrics - ML Encyclopedia</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .content-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        h2 {
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-top: 2rem;
+        }
+
+        p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
+
+        .metric-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .formula-box {
+            background: #0f172a;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 1rem 0;
+            border: 1px solid #334155;
+        }
+
+        .comparison-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .vs-tag {
+            text-align: center;
+            align-self: center;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <a href="../index.html" class="back-link">← Back to Master Index</a>
+        
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+            <h1>Evaluation Metrics</h1>
+            
+            <div class="understanding-widget" id="rating-widget" data-topic="evaluation_metrics">
+                <span class="understanding-label">Understanding:</span>
+                <div class="rating-box" data-value="1"></div>
+                <div class="rating-box" data-value="2"></div>
+                <div class="rating-box" data-value="3"></div>
+                <div class="rating-box" data-value="4"></div>
+                <div class="rating-box" data-value="5"></div>
+            </div>
+        </div>
+
+        <script>
+            (function() {
+                const widget = document.getElementById('rating-widget');
+                const topicId = widget.getAttribute('data-topic');
+                const boxes = widget.querySelectorAll('.rating-box');
+                const savedRating = localStorage.getItem('rating-' + topicId) || 0;
+                updateVisuals(savedRating);
+                boxes.forEach(box => {
+                    box.addEventListener('click', () => {
+                        const val = box.getAttribute('data-value');
+                        localStorage.setItem('rating-' + topicId, val);
+                        updateVisuals(val);
+                    });
+                });
+                function updateVisuals(rating) {
+                    boxes.forEach(b => {
+                        if(parseInt(b.getAttribute('data-value')) <= rating) b.classList.add('filled');
+                        else b.classList.remove('filled');
+                    });
+                }
+            })();
+        </script>
+
+        <section>
+            <h2>1. Cost Function vs. Evaluation Metric</h2>
+            <p>
+                Wait, didn't we already talk about <strong>MSE</strong> in the Optimization section? Why do we need "Metrics" separately? 
+            </p>
+            
+            <div class="comparison-box">
+                <div style="background: rgba(96, 165, 250, 0.05); padding: 1.5rem; border-radius: 8px; border: 1px solid #60a5fa;">
+                    <h3 style="color: #60a5fa; margin-top: 0;">Cost Function ($J$)</h3>
+                    <p style="font-size: 0.95rem;"><strong>The Compass:</strong> Used <em>during</em> training. It must be <strong>differentiable</strong> (smooth) so Gradient Descent can follow it.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);"><em>"Which direction should the weights move?"</em></p>
+                </div>
+                <div style="background: rgba(52, 211, 153, 0.05); padding: 1.5rem; border-radius: 8px; border: 1px solid #34d399;">
+                    <h3 style="color: #34d399; margin-top: 0;">Evaluation Metric</h3>
+                    <p style="font-size: 0.95rem;"><strong>The Scoreboard:</strong> Used <em>after</em> training. It must be <strong>interpretable</strong> (human-readable) to judge the final model.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);"><em>"Is this model good enough to deploy?"</em></p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Key Insight:</strong> Sometimes they are the same (like MSE). But sometimes a metric is great for humans (like % Accuracy) but bad for computers (Accuracy is not "smooth," so math can't optimize it directly).
+            </div>
+        </section>
+
+        <section>
+            <h2>2. Common Regression Metrics</h2>
+            
+            <!-- MAE -->
+            <div class="metric-card">
+                <h3 style="color: #a78bfa;">Mean Absolute Error ( MAE )</h3>
+                <p>The simplest way to measure error: calculate the average of the absolute differences between predictions and actual values.</p>
+                <div class="formula-box">
+                    $$ MAE = \frac{1}{n} \sum | Y' - Y | $$ 
+                </div>
+                <p><strong>Interpretation:</strong> <em>"On average, our prediction is off by X units."</em> (e.g., $500 off in house price). It is robust to outliers.</p>
+            </div>
+
+            <!-- MSE -->
+            <div class="metric-card">
+                <h3 style="color: #f472b6;">Mean Squared Error ( MSE )</h3>
+                <p>Calculates the average of the squared errors.</p>
+                <div class="formula-box">
+                    $$ MSE = \frac{1}{n} \sum ( Y' - Y )^2 $$ 
+                </div>
+                <p><strong>Interpretation:</strong> Hard to read directly (e.g., "Error is 250,000 dollars squared"). However, it <strong>punishes large errors</strong> much harder than small ones.</p>
+            </div>
+
+            <!-- RMSE -->
+            <div class="metric-card">
+                <h3 style="color: #60a5fa;">Root Mean Squared Error ( RMSE )</h3>
+                <p>The square root of the MSE.</p>
+                <div class="formula-box">
+                    $$ RMSE = \sqrt{MSE} $$ 
+                </div>
+                <p><strong>Interpretation:</strong> Combines the benefits of MSE (punishing outliers) with the readability of MAE (back to original units like "Dollars").</p>
+            </div>
+
+            <!-- R-Squared -->
+            <div class="metric-card">
+                <h3 style="color: #34d399;">R-Squared ( $R^2$ )</h3>
+                <p>The "Coefficient of Determination." It measures what percentage of the data's variance is explained by the model.</p>
+                <div class="formula-box">
+                    $$ R^2 = 1 - \frac{\text{SSR}}{\text{SST}} $$ 
+                </div>
+
+                <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem; border: 1px solid rgba(255,255,255,0.05);">
+                    <h4 style="margin-top: 0; color: var(--primary-color);">The Math Breakdown: SSR & SST</h4>
+                    
+                    <p style="font-size: 0.95rem;"><strong>1. What is a "Residual"?</strong><br>
+                    A residual is simply the "Leftover" error for a single data point. It is the distance between the <strong>Actual Value</strong> ($Y$) and the <strong>Predicted Value</strong> ($Y'$).
+                    <br>$$ \text{Residual} = Y_{actual} - Y'_{predicted} $$
+                    </p>
+
+                    <p style="font-size: 0.95rem;"><strong>2. SSR ( Sum of Squared Residuals )</strong><br>
+                    We square every residual (to remove negatives) and add them all up. This represents the <strong>Total Error</strong> our model made.
+                    <br>$$ SSR = \sum ( Y_{actual} - Y'_{predicted} )^2 $$
+                    </p>
+
+                    <p style="font-size: 0.95rem;"><strong>3. SST ( Total Sum of Squares )</strong><br>
+                    This is the "Baseline" error. Imagine we had NO model and just guessed the <strong>Mean ( Average )</strong> for every single point. SST is the total error of that "dumb" guessing strategy.
+                    <br>$$ SST = \sum ( Y_{actual} - Y_{mean} )^2 $$
+                    </p>
+
+                    <p style="font-size: 0.9rem; color: var(--text-muted); border-top: 1px solid #334155; padding-top: 0.5rem; margin-top: 0.5rem;">
+                        <strong>Intuition:</strong> $R^2$ compares our model's error (SSR) against the baseline error (SST). If our model is perfect, SSR is 0, so $R^2 = 1 - 0 = 1$.
+                    </p>
+                </div>
+
+                <ul style="margin-top: 1rem;">
+                    <li><strong>$R^2 = 1.0$:</strong> Perfect model.</li>
+                    <li><strong>$R^2 = 0.0$:</strong> Model is as bad as just guessing the average every time.</li>
+                </ul>
+
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(244, 63, 94, 0.1); border-radius: 8px; border-left: 4px solid #f43f5e;">
+                    <strong style="color: #f43f5e;">The Problem with $R^2$:</strong><br>
+                    $R^2$ is greedy. If you add <em>any</em> new feature—even a useless one like "Random Noise"—the $R^2$ will **always** increase or stay the same. It never goes down. This makes it a poor judge for complex models.
+                </div>
+            </div>
+
+            <!-- Adjusted R-Squared -->
+            <div class="metric-card">
+                <h3 style="color: #fbbf24;">Adjusted R-Squared</h3>
+                <p>The "Fair Judge." It adjusts the $R^2$ based on the number of features in the model. It <strong>penalizes</strong> you for adding features that don't help.</p>
+                <div class="formula-box">
+                    $$ \text{Adjusted } R^2 = 1 - \left( \frac{(1 - R^2)(n - 1)}{n - k - 1} \right) $$
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-muted); text-align: center;">
+                    (where $n$ = samples, $k$ = number of features)
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px;">
+                        <h4 style="margin-top: 0; color: #f43f5e;">Intuition: $R^2$</h4>
+                        <ul style="font-size: 0.85rem; padding-left: 1.2rem; color: var(--text-muted);">
+                            <li>Add useful feature $\to$ $R^2$ ↑</li>
+                            <li>Add useless feature $\to$ $R^2$ ↑ (False sense of security!)</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px;">
+                        <h4 style="margin-top: 0; color: #34d399;">Intuition: Adjusted $R^2$</h4>
+                        <ul style="font-size: 0.85rem; padding-left: 1.2rem; color: var(--text-muted);">
+                            <li>Feature improves model enough $\to$ Adj $R^2$ ↑</li>
+                            <li>Feature adds little/no value $\to$ Adj $R^2$ ↓</li>
+                            <li>Model gets worse $\to$ Adj $R^2$ ↓↓</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Math Deep Dive: The R-Squared Trap -->
+            <div style="margin-top: 3rem; border-top: 2px dashed var(--border-color); padding-top: 2rem;">
+                <h3 style="color: #60a5fa;">Math Deep Dive: Why does $R^2$ "fail" by always increasing?</h3>
+                <p>
+                    To understand why $R^2$ is "greedy," we have to look at how the computer calculates the weights ($\theta$).
+                </p>
+
+                <div class="step-box" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 12px;">
+                    <p><strong>1. The Optimizer's Job:</strong><br>
+                    The computer's only goal is to make <strong>SSR ( Sum of Squared Residuals )</strong> as small as possible. It is a "minimization machine."
+                    </p>
+
+                    <p><strong>2. More "Knobs" = More Chances to Cheat:</strong><br>
+                    Every time you add a new feature (even a useless one like <em>"Random Noise"</em>), you are giving the computer a new <strong>knob ($\theta_{new}$)</strong> to turn.
+                    </p>
+
+                    <p><strong>3. Optimization by Luck:</strong><br>
+                    Even if a feature has <strong>zero</strong> relationship with the answer, the computer will find a tiny, tiny correlation just by pure luck/chance. 
+                    <br><br>
+                    By setting $\theta_{new}$ to a very small number, the computer can shave off a tiny bit of the <strong>SSR</strong>. It never has a reason to set $\theta$ to exactly zero (unless you use Lasso), so the error <strong>always</strong> goes down slightly.
+                    </p>
+
+                    <div style="background: rgba(244, 63, 94, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #f43f5e; margin-top: 1rem;">
+                        <strong>The Mathematical Result:</strong><br>
+                        Since $R^2 = 1 - \frac{SSR}{SST}$:<br>
+                        As $SSR$ ( Error ) goes down $\to$ The fraction $\frac{SSR}{SST}$ gets smaller $\to$ $R^2$ goes <strong>UP</strong>.
+                    </div>
+                </div>
+
+                <p style="margin-top: 1.5rem;">
+                    <strong>Analogy:</strong> Imagine a student taking a multiple-choice test. If you give them 100 extra "lucky guesses," their score will likely go up by 1 or 2 points just by chance, even if they didn't study more. $R^2$ records that higher score, but Adjusted $R^2$ "subtracts" the points they got by luck.
+                </p>
+            </div>
+        </section>
+
+        <!-- 3. Doubts: Can any metric be a Cost Function? -->
+        <section>
+            <h2>3. Can any metric be a Cost Function?</h2>
+            <p>
+                You might wonder: <em>"If MAE is easier for humans to understand, why don't we use it as the Cost Function for Gradient Descent?"</em>
+            </p>
+
+            <div class="metric-card" style="border-left: 4px solid #fbbf24; background: rgba(251, 191, 36, 0.05);">
+                <h3 style="color: #fbbf24;">The Secret Requirement: Smoothness ( Differentiability )</h3>
+                <p>
+                    For Gradient Descent to work, the function <strong>must be differentiable</strong>. This means it must have a defined slope (gradient) at every single point.
+                </p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem;">
+                    <div style="text-align: center;">
+                        <strong style="color: #34d399;">MSE ( Smooth Bowl )</strong><br>
+                        <svg width="100" height="60" viewBox="0 0 100 60">
+                            <path d="M 10,10 Q 50,80 90,10" stroke="#34d399" fill="none" stroke-width="2"/>
+                        </svg>
+                        <p style="font-size: 0.8rem;">The slope changes gently. Gradient Descent can "slide" down perfectly.</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <strong style="color: #f43f5e;">MAE ( Sharp "V" )</strong><br>
+                        <svg width="100" height="60" viewBox="0 0 100 60">
+                            <path d="M 10,10 L 50,50 L 90,10" stroke="#f43f5e" fill="none" stroke-width="2"/>
+                        </svg>
+                        <p style="font-size: 0.8rem;">At the very bottom (Zero), the slope is undefined. GD can get "stuck" or bounce forever.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Summary Table</h3>
+            <table class="comparison-table" style="width: 100%; border-collapse: collapse; margin-top: 1rem; color: var(--text-muted);">
+                <tr style="border-bottom: 1px solid var(--border-color); text-align: left;">
+                    <th style="padding: 10px;">Metric</th>
+                    <th style="padding: 10px;">Use as Cost?</th>
+                    <th style="padding: 10px;">Reason</th>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 10px; color: var(--text-color);"><strong>MSE</strong></td>
+                    <td style="padding: 10px; color: var(--success-color);">Yes (Default)</td>
+                    <td style="padding: 10px;">Mathematically smooth and very stable.</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 10px; color: var(--text-color);"><strong>RMSE</strong></td>
+                    <td style="padding: 10px; color: #fbbf24;">Rarely</td>
+                    <td style="padding: 10px;">Minimizing MSE is the same as RMSE, but MSE is easier to calculate.</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 10px; color: var(--text-color);"><strong>MAE</strong></td>
+                    <td style="padding: 10px; color: #fbbf24;">Sometimes</td>
+                    <td style="padding: 10px;">Used in "Robust Regression," but harder for simple computers.</td>
+                </tr>
+            </table>
+
+            <div style="margin-top: 1.5rem; background: rgba(96, 165, 250, 0.05); border-left: 4px solid #60a5fa; padding: 1rem;">
+                <h4 style="margin-top: 0; color: #60a5fa;">The MSE vs. RMSE Showdown</h4>
+                <p style="font-size: 0.95rem; margin-bottom: 0;">
+                    Since <strong>RMSE</strong> is just $\sqrt{MSE}$, the point where error is lowest is the <strong>same</strong> for both. So why do we prefer <strong>MSE</strong> for training?
+                </p>
+                <ul style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.5rem;">
+                    <li><strong>Simpler Math:</strong> The derivative of $x^2$ is just $2x$. The derivative of $\sqrt{x}$ is $\frac{1}{2\sqrt{x}}$, which is more complex for the computer.</li>
+                    <li><strong>Stability:</strong> As we get close to the bottom (Zero Error), the $\sqrt{x}$ derivative can become unstable (division by zero issues), while the $x^2$ derivative just gently becomes zero.</li>
+                </ul>
+            </div>
+        </section>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 10px; color: var(--text-color);"><strong>R-Squared</strong></td>
+                    <td style="padding: 10px; color: #f43f5e;">No</td>
+                    <td style="padding: 10px;">It's a relative score, not a direct measurement of distance.</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; color: var(--text-color);"><strong>Accuracy</strong></td>
+                    <td style="padding: 10px; color: #f43f5e;">Never</td>
+                    <td style="padding: 10px;">It's a step-function (0 or 1). Slope is 0 everywhere!</td>
+                </tr>
+            </table>
+        </section>
+    </div>
+</body>
+</html>

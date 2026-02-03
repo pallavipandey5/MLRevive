@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Initialization - ML Encyclopedia</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .content-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        h1 { color: var(--text-color); margin-bottom: 1rem; }
+        h2 { color: var(--primary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 2rem; }
+        h3 { color: #a78bfa; margin-top: 1.5rem; }
+        p { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; }
+        
+        .math-box {
+            background: #0f172a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.3rem;
+            margin: 1.5rem 0;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+        }
+
+        .explainer {
+            background: rgba(59, 130, 246, 0.05);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <a href="parameter_optimization.html" class="back-link">← Back to Parameter Optimization</a>
+        
+        <h1>Strategic Initialization</h1>
+        <p>
+            In deep neural networks, initializing weights with simple random numbers often causes problems. If weights are too small, the signal disappears (**Vanishing Gradient**). If they are too large, the signal explodes (**Exploding Gradient**).
+        </p>
+        <p>
+            Strategic initialization methods use the number of inputs ($n_{in}$) and outputs ($n_{out}$) to calculate the perfect variance for the starting weights.
+        </p>
+
+        <!-- Xavier -->
+        <section>
+            <h2>1. Xavier ( Glorot ) Initialization</h2>
+            <div class="explainer">
+                <strong>Best for:</strong> Sigmoid and Tanh activation functions.
+            </div>
+            <p>
+                Xavier initialization keeps the variance of the activations the same across layers. It draws weights from a distribution with:
+            </p>
+            <div class="math-box">
+                $$ \sigma^2 = \frac{2}{n_{in} + n_{out}} $$ 
+            </div>
+            <p style="text-align: center; font-size: 0.9rem; color: #94a3b8;">
+                (Weights are sampled from $Normal(0, \sigma^2)$ or $Uniform(-\sqrt{3\sigma^2}, \sqrt{3\sigma^2})$)
+            </p>
+        </section>
+
+        <!-- He -->
+        <section>
+            <h2>2. He Initialization</h2>
+            <div class="explainer">
+                <strong>Best for:</strong> ReLU ( Rectified Linear Unit ) and its variants.
+            </div>
+            <p>
+                Because ReLU "shuts off" half the neurons (negative values become 0), it needs a slightly larger starting variance to keep the signal alive.
+            </p>
+            <div class="math-box">
+                $$ \sigma^2 = \frac{2}{n_{in}} $$
+            </div>
+            <p style="text-align: center; font-size: 0.9rem; color: #94a3b8;">
+                (Named after Kaiming He, the lead author of the ResNet paper)
+            </p>
+        </section>
+
+        <section>
+            <h2>Summary</h2>
+            <p>
+                For simple models like <strong>Linear Regression</strong>, initialization is not very sensitive—you can often start at zero or with basic random numbers and reach the minimum easily.
+            </p>
+            <p>
+                However, as models grow in complexity (like Deep Neural Networks), these strategic methods become <strong>essential</strong>. By scaling the starting weights based on the input size, we ensure the signals stay stable (neither becoming zero nor infinity), allowing the optimization process to begin from a healthy, balanced state.
+            </p>
+        </section>
+
+    </div>
+</body>
+</html>
